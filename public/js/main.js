@@ -1,6 +1,15 @@
 // Import API functions
 import { fetchHomeData, fetchAnimeDetails } from './api.js';
 
+function handleGoHome() {
+    if (window.artplayer) {
+        window.artplayer.destroy();
+        window.artplayer = null; // Dereference the player instance
+    }
+    showPage('home');
+}
+window.handleGoHome = handleGoHome; // Make it accessible from the HTML
+
 // Page navigation
 function showPage(pageId) {
     // Hide all pages
@@ -20,7 +29,7 @@ function showPage(pageId) {
     }
 
     // Add 'active' class to the correct nav link
-    const activeLink = document.querySelector(`nav a[onclick*="showPage('${pageId}')"]`);
+    const activeLink = document.querySelector(`nav a[onclick*="showPage('${pageId}')"]`) || document.querySelector(`nav a[onclick*="handleGoHome()"]`);
     if (activeLink) {
         activeLink.classList.add('active');
     }

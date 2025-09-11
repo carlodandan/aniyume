@@ -12,14 +12,14 @@
 <body>
     <header>
         <div class="container header-content">
-            <a href="/" class="logo" onclick="event.preventDefault(); showPage('home')">
+            <a href="/" class="logo" onclick="event.preventDefault(); handleGoHome()">
                 <i class="fas fa-play-circle"></i>
                 Ani<span>Yu</span>me
             </a>
             
             <nav id="nav">
                 <ul>
-                    <li><a href="/" class="active" onclick="event.preventDefault(); showPage('home')">Home</a></li>
+                    <li><a href="/" class="active" onclick="event.preventDefault(); handleGoHome()">Home</a></li>
                     <li><a href="/browse" onclick="event.preventDefault(); showPage('browse')">Browse</a></li>
                     <li><a href="/trending" onclick="event.preventDefault(); showPage('trending')">Trending</a></li>
                     <li><a href="/new" onclick="event.preventDefault(); showPage('new')">New</a></li>
