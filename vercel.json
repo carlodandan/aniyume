@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/_vercel.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "/public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/src/(.*)",
+      "dest": "/src/_vercel"
+    },
+    {
+      "src": "/m3u8-proxy",
+      "dest": "/src/_vercel"
+    },
+    {
+      "src": "/ts-proxy",
+      "dest": "/src/_vercel"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*\\..*)",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.html"
+    }
+  ]
+}

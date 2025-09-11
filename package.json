@@ -1,0 +1,19 @@
+{
+    "name": "theanimedb",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "wrangler dev",
+        "deploy": "wrangler deploy",
+        "deploy:vercel": "vercel deploy --prod"
+    },
+    "devDependencies": {
+        "node-fetch": "^2.6.7",
+        "vercel": "^32.7.2",
+        "wrangler": "^4.34.0"
+    },
+    "dependencies": {
+        "artplayer": "^5.2.3",
+        "artplayer-plugin-chapter": "^1.0.1",
+        "artplayer-plugin-hls-control": "^1.0.1",
+    }
+}

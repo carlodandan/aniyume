@@ -1,0 +1,17 @@
+name = "theanimedb"
+main = "src/_workers.js"
+compatibility_date = "2025-06-05"
+compatibility_flags = ["nodejs_compat"] 
+
+# This explicitly binds the 'dist' directory to the 'ASSETS' variable in your worker
+[assets]
+directory = "./public"
+not_found_handling = "single-page-application"
+binding = "ASSETS"
+
+[vars]
+ENVIRONMENT = "production"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
