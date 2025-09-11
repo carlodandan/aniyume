@@ -1,5 +1,9 @@
 // Import API functions
 import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime } from './api.js';
+// Import the player initializer from our new file using an absolute path
+import { initPlayer } from '/js/player.js';
+
+let currentInfoPageAnimeId = null;
 
 function handleGoHome() {
     if (window.artplayer) {
@@ -8,8 +12,6 @@ function handleGoHome() {
     }
     showPage('home');
 }
-// Make it accessible from the HTML
-window.handleGoHome = handleGoHome;
 
 // Page navigation
 function showPage(pageId) {
@@ -37,14 +39,13 @@ function showPage(pageId) {
 
     // Update the browser URL and history
     const path = pageId === 'home' ? '/' : `/${pageId}`;
-    // Only push state if the path is actually changing
     if (window.location.pathname !== path) {
          history.pushState({pageId: pageId}, null, path);
     }
     
     // Run page-specific functions
     if (pageId === 'player') {
-        initPlayer();
+        initPlayer(); // This now calls the function from player.js
     } else if (pageId === 'home') {
         loadTrendingAnime();
     } else if (pageId === 'info') {
@@ -66,19 +67,13 @@ async function loadTrendingAnime() {
     if (!trendingGrid) return;
 
     try {
-        // Show loading state
         trendingGrid.innerHTML = '<div class="loading">Loading trending anime...</div>';
-
-        // Fetch trending data from API
         const homeData = await fetchHomeData();
-
-        // Extract trending anime from the response
         let trendingAnime = [];
         if (homeData && homeData.results && Array.isArray(homeData.results.trending)) {
             trendingAnime = homeData.results.trending;
         }
 
-        // Render trending anime cards
         if (trendingAnime.length > 0) {
             trendingGrid.innerHTML = trendingAnime.map(anime => createAnimeCard(anime)).join('');
         } else {
@@ -99,9 +94,7 @@ async function loadRecentlyUpdatedAnime() {
     try {
         grid.innerHTML = '<div class="loading">Loading recently updated anime...</div>';
         const data = await fetchRecentlyUpdatedAnime();
-        
-        // --- THIS IS THE CORRECTED LINE ---
-        const animeList = data.results.data; 
+        const animeList = data.results.data;
 
         if (animeList && animeList.length > 0) {
             grid.innerHTML = animeList.map(anime => createAnimeCard(anime)).join('');
@@ -114,7 +107,7 @@ async function loadRecentlyUpdatedAnime() {
     }
 }
 
-// Create anime card HTML (vertical style, with optional trending number)
+// Create anime card HTML
 function createAnimeCard(anime) {
     const title = anime.title || anime.name || 'Unknown Title';
     const image = anime.poster || anime.image || 'https://via.placeholder.com/300x400?text=No+Image';
@@ -137,10 +130,8 @@ function createAnimeCard(anime) {
     `;
 }
 
-
-// Function to handle anime card clicks
+// Function to handle anime card clicks and navigate to player
 function showAnimePlayer(animeId) {
-    // Store the anime ID for the player page
     localStorage.setItem('selectedAnimeId', animeId);
     showPage('player');
 }
@@ -196,201 +187,52 @@ async function loadInfoPage(animeId) {
     }
 }
 
-// Go back function for info page
 function goBack() {
     history.back();
 }
 
-// Show info page for anime
 function showInfoPage(animeId) {
     if (!animeId) return;
+    currentInfoPageAnimeId = animeId;
     history.pushState(null, '', `/info?id=${animeId}`);
     showPage('info');
     loadInfoPage(animeId);
 }
 
-// Initialize info page (placeholder for future enhancements)
+function watchAnimeFromInfo() {
+    if (!currentInfoPageAnimeId) {
+        console.error("Could not find the anime ID to play.");
+        return;
+    }
+    showAnimePlayer(currentInfoPageAnimeId);
+}
+
 function initInfoPage() {
     // Currently handled by loadInfoPage in showInfoPage
 }
 
-// Update player page with anime details
-function updatePlayerPageDetails(details) {
-    const playerPage = document.getElementById('player-page');
-    const poster = playerPage.querySelector('.anime-poster');
-    const title = playerPage.querySelector('.detail-content h2');
-    const meta = playerPage.querySelector('.detail-meta');
-    const description = playerPage.querySelector('.detail-description');
-    const tags = playerPage.querySelector('.detail-tags');
-
-    if (!details) {
-        title.textContent = 'Anime Not Found';
-        description.textContent = 'The details for this anime could not be loaded. Please go back and try again.';
-        poster.src = 'https://placehold.co/300x400/8b5cf6/FFFFFF?text=Not+Found';
-        meta.innerHTML = '';
-        tags.innerHTML = '';
-        return;
-    }
-
-    poster.src = details.poster || 'https://placehold.co/300x400/8b5cf6/FFFFFF?text=No+Image';
-    poster.alt = `${details.title} poster`;
-    title.textContent = details.title || 'Unknown Title';
-
-    const airedYear = details.animeInfo?.Aired?.match(/\d{4}/)?.[0] || 'N/A';
-    const duration = details.animeInfo?.Duration || 'N/A';
-    const malScore = details.animeInfo?.['MAL Score'] || 'N/A';
-
-    meta.innerHTML = `
-            <span><strong class="meta-key">Type:</strong> ${details.showType || 'TV'}</span>
-            <span><strong class="meta-key">Premiere:</strong> ${airedYear}</span>
-            <span><strong class="meta-key">Duration:</strong> ${duration}</span>
-            <span class="anime-rating"><strong class="meta-key">Rating:</strong> <i class="fas fa-star"></i> ${malScore}</span>
-        `;
-
-    description.textContent = details.animeInfo?.Overview || 'No description available.';
-
-    tags.innerHTML = details.animeInfo?.Genres?.map(genre => `<span class="tag">${genre}</span>`).join('') || '';
-}
-
-// Initialize video player
-async function initPlayer() {
-    // Destroy existing player if any
-    if (window.artplayer) {
-        window.artplayer.destroy();
-    }
-
-    // Create new player
-    window.artplayer = new Artplayer({
-        container: '#player',
-        url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-        poster: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/c9901b2b-69fb-4719-a0c4-ce9061ec9278.png',
-        volume: 0.5,
-        isLive: false,
-        muted: false,
-        autoplay: false,
-        pip: true,
-        autoSize: true,
-        autoMini: true,
-        screenshot: true,
-        setting: true,
-        loop: false,
-        flip: true,
-        playbackRate: true,
-        aspectRatio: true,
-        fullscreen: true,
-        fullscreenWeb: true,
-        subtitleOffset: true,
-        miniProgressBar: true,
-        mutex: true,
-        backdrop: true,
-        playsInline: true,
-        autoPlayback: true,
-        airplay: true,
-        theme: '#8b5cf6',
-        lang: navigator.language.toLowerCase(),
-        moreVideoAttr: {
-            crossOrigin: 'anonymous',
-        },
-        settings: [
-            {
-                html: 'Subtitle',
-                tooltip: 'English',
-                selector: [
-                    {
-                        html: 'Display',
-                        tooltip: 'Show',
-                        switch: true,
-                        onSwitch: function (item) {
-                            item.tooltip = item.switch ? 'Hide' : 'Show';
-                            window.artplayer.subtitle.show = !item.switch;
-                            return !item.switch;
-                        },
-                    },
-                ],
-            },
-        ],
-        contextmenu: [
-            {
-                html: 'Info',
-                click: function () {
-                    console.log('You clicked the info menu');
-                },
-            },
-        ],
-        controls: [
-            {
-                position: 'right',
-                html: '<i class="fas fa-cog"></i>',
-                tooltip: 'Settings',
-                click: function () {
-                    window.artplayer.setting.show = !window.artplayer.setting.show;
-                },
-            },
-        ],
-    });
-
-    // HLS initialization
-    if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8');
-        hls.attachMedia(window.artplayer.video);
-    } else if (window.artplayer.video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Native HLS support (Safari)
-        window.artplayer.video.src = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
-    }
-
-    // Fetch and display anime details
-    const animeId = localStorage.getItem('selectedAnimeId');
-    if (!animeId) {
-        console.error('No anime ID found for player page');
-        updatePlayerPageDetails(null);
-        return;
-    }
-
-    try {
-        const apiResponse = await fetchAnimeDetails(animeId);
-        updatePlayerPageDetails(apiResponse.results?.data);
-    } catch (error) {
-        console.error('Error loading anime details:', error);
-        updatePlayerPageDetails(null);
-    }
-}
-
-// ** ADD THESE LINES TO FIX THE ERROR **
-// Make functions globally accessible for onclick attributes
+// Make functions globally accessible for onclick attributes in HTML
 window.showPage = showPage;
 window.toggleMenu = toggleMenu;
 window.showAnimePlayer = showAnimePlayer;
 window.goBack = goBack;
 window.showInfoPage = showInfoPage;
+window.watchAnimeFromInfo = watchAnimeFromInfo;
+window.handleGoHome = handleGoHome;
 
-
-// Initialize the page
+// Initialize the page and set up routing
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const path = window.location.pathname;
 
-    // UPDATE THIS ROUTING LOGIC
     if (path === '/info' && urlParams.has('id')) {
         const animeId = urlParams.get('id');
         showInfoPage(animeId);
     } else if (path === '/recently-updated') {
         showPage('recently-updated');
     } else {
-        // For '/' and any other unknown path, go home.
         showPage('home');
     }
-
-    // Set up episode buttons
-    document.querySelectorAll('.episode-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.episode-btn').forEach(b => {
-                b.classList.remove('active');
-            });
-            this.classList.add('active');
-            // In a real app, you would change the video source here
-        });
-    });
 
     // Set up search functionality
     const searchInput = document.querySelector('.search-input');
@@ -401,22 +243,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Add this inside the DOMContentLoaded event listener function
+    // Handle browser back/forward navigation
     window.addEventListener('popstate', function(event) {
         const path = window.location.pathname;
         const urlParams = new URLSearchParams(window.location.search);
 
-        // UPDATE THIS ROUTING LOGIC AS WELL
         if (path.startsWith('/info') && urlParams.has('id')) {
             const animeId = urlParams.get('id');
-            // Ensure the correct page is shown and data is loaded
             showPage('info');
             loadInfoPage(animeId);
         } else if (path === '/recently-updated') {
             showPage('recently-updated');
         } else {
-            // Default to the home page for '/' or anything else
             showPage('home');
         }
     });
 });
+

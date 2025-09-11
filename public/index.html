@@ -71,12 +71,12 @@
                     </div>
             </section>
         </section>
-        
+
         <section id="recently-updated-page" class="page">
             <div class="container">
                 <h2 class="section-title"><i class="fas fa-history"></i> Recently Updated</h2>
                 <div class="recently-updated-grid anime-grid">
-                    </div>
+                </div>
             </div>
         </section>
 
@@ -85,88 +85,10 @@
                 <div class="player-wrapper">
                     <div id="player"></div>
                 </div>
-                
-                <div class="episode-selector">
-                    <button class="episode-btn active">Episode 1</button>
-                    <button class="episode-btn">Episode 2</button>
-                    <button class="episode-btn">Episode 3</button>
-                    <button class="episode-btn">Episode 4</button>
-                    <button class="episode-btn">Episode 5</button>
-                    <button class="episode-btn">Episode 6</button>
-                    <button class="episode-btn">Episode 7</button>
-                    <button class="episode-btn">Episode 8</button>
-                </div>
-                
-                <div class="anime-details">
-                    <img src="https://placehold.co/300x400/8b5cf6/FFFFFF?text=Demon+Slayer" alt="High quality poster of Demon Slayer featuring the main characters in action poses" class="anime-poster">
-                    
-                    <div class="detail-content">
-                        <h2>Demon Slayer: Kimetsu no Yaiba</h2>
-                        <div class="detail-meta">
-                            <span>TV Series</span>
-                            <span>2019</span>
-                            <span>24 min</span>
-                            <span class="anime-rating"><i class="fas fa-star"></i> 9.2</span>
-                        </div>
-                        
-                        <p class="detail-description">
-                            Tanjiro Kamado is a kind-hearted boy who becomes a demon slayer after his family is slaughtered and his sister turned into a demon. 
-                            Together with his comrades, he embarks on a dangerous journey to find a cure for his sister and destroy the demon lord Muzan Kibutsuji.
-                        </p>
-                        
-                        <div class="detail-tags">
-                            <span class="tag">Action</span>
-                            <span class="tag">Adventure</span>
-                            <span class="tag">Supernatural</span>
-                            <span class="tag">Shounen</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <h2 class="section-title"><i class="fas fa-list"></i> More Episodes</h2>
-                <div class="anime-grid">
-                    <div class="anime-card" onclick="showPage('player')">
-                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/861ffcfa-fd34-4054-8f70-1e52d7b6ca93.png" alt="Scene from Demon Slayer episode 2 showing Tanjiro's first training session" class="anime-thumb">
-                        <div class="anime-info">
-                            <h3 class="anime-title">Episode 2: Trainer Sakonji Urokodaki</h3>
-                            <div class="anime-meta">
-                                <span>24 min</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="anime-card" onclick="showPage('player')">
-                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/59596257-d6bc-4b9b-87d2-79984b629b47.png" alt="Scene from Demon Slayer episode 3 with Tanjiro facing his first major demon battle" class="anime-thumb">
-                        <div class="anime-info">
-                            <h3 class="anime-title">Episode 3: Sabito and Makomo</h3>
-                            <div class="anime-meta">
-                                <span>24 min</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="anime-card" onclick="showPage('player')">
-                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/317a00de-8863-47af-8abd-804726204333.png" alt="Scene from Demon Slayer episode 4 showing the Final Selection exam" class="anime-thumb">
-                        <div class="anime-info">
-                            <h3 class="anime-title">Episode 4: Final Selection</h3>
-                            <div class="anime-meta">
-                                <span>24 min</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="anime-card" onclick="showPage('player')">
-                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ffdc9dcc-c75f-4783-8ccd-d74df79706b0.png" alt="Scene from Demon Slayer episode 5 featuring Tanjiro's first mission as a demon slayer" class="anime-thumb">
-                        <div class="anime-info">
-                            <h3 class="anime-title">Episode 5: My Own Steel</h3>
-                            <div class="anime-meta">
-                                <span>24 min</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </section> <section id="browse-page" class="page">
+        </section>
+        
+        <section id="browse-page" class="page">
             <div class="container">
                 <h2 class="section-title"><i class="fas fa-compass"></i> Browse All Anime</h2>
                 <p class="hero-description">Explore our complete library of anime series and movies.</p>
@@ -204,7 +126,10 @@
         
         <section id="info-page" class="page">
             <div class="container info-container">
-                <button onclick="goBack()" class="back-btn"><i class="fas fa-arrow-left"></i> Go Back</button>
+                <div class="info-page-actions">
+                    <button onclick="goBack()" class="back-btn"><i class="fas fa-arrow-left"></i> Go Back</button>
+                    <button onclick="watchAnimeFromInfo()" class="watch-btn"><i class="fas fa-play"></i> Watch Now</button>
+                </div>
                 
                 <div class="anime-details">
                     <img src="" alt="Anime Poster" class="anime-poster-info">
@@ -270,8 +195,9 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/artplayer@3.6.10/dist/artplayer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.0.0/dist/hls.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/artplayer-plugin-hls-control/dist/artplayer-plugin-hls-control.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script type="module" src="/js/main.js"></script>
 </body>
 </html>

@@ -397,13 +397,12 @@
 
         /* Player Page */
         .player-container {
-            padding: 20px 0;
+            padding: 40px 0;
         }
 
         .player-wrapper {
             border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 20px;
             -webkit-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
                     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
@@ -698,8 +697,8 @@
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
-    background: -webkit-gradient(linear, left top, left bottom, from(white), to(black));
     background: -o-linear-gradient(top, white, black);
+    background: -webkit-gradient(linear, left top, left bottom, from(white), to(black));
     background: linear-gradient(to bottom, white, black);
 }
 
@@ -711,20 +710,33 @@
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-transition: -webkit-transform 0.3s, -webkit-box-shadow 0.3s;
+    transition: -webkit-transform 0.3s, -webkit-box-shadow 0.3s;
+    -o-transition: transform 0.3s, box-shadow 0.3s;
     transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s, -webkit-transform 0.3s, -webkit-box-shadow 0.3s;
 }
 
 .anime-card-vertical:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    -webkit-transform: translateY(-5px);
+        -ms-transform: translateY(-5px);
+            transform: translateY(-5px);
+    -webkit-box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 .anime-thumb-vertical {
     width: 100%;
     height: 400px;
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
     display: block;
 }
 
@@ -752,12 +764,17 @@
     margin-bottom: 8px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+       text-overflow: ellipsis;
 }
 
 .anime-card-vertical .anime-meta {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: space-between;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
     color: #94a3b8;
     font-size: 14px;
 }
@@ -765,6 +782,14 @@
 /* --- Info Page Specific Styles --- */
 .info-container {
     padding-top: 40px; /* Add some space from the top */
+}
+
+.info-page-actions {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
 .back-btn {
@@ -785,7 +810,35 @@
         -ms-flex-align: center;
             align-items: center;
     gap: 8px;
-    margin-bottom: 30px; /* Space between button and details */
+}
+
+.watch-btn {
+    background: var(--primary);
+    border: 1px solid var(--primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 500;
+    cursor: pointer;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    gap: 8px;
+}
+
+.watch-btn:hover {
+    background: var(--primary-dark);
+    -webkit-transform: translateY(-2px);
+        -ms-transform: translateY(-2px);
+            transform: translateY(-2px);
+    -webkit-box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
 }
 
 .back-btn:hover {
@@ -856,4 +909,41 @@
     border-radius: 12px;
     -webkit-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* ADD THESE STYLES FOR PLAYER LOADING/ERROR STATES */
+.player-container .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh; /* Make it take up a good portion of the screen */
+}
+.player-container .spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid var(--primary);
+    width: 50px;
+    height: 50px;
+    -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+}
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@keyframes spin {
+    0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+.player-container .error-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    color: #f87171; /* A light red color for visibility */
+    background: rgba(30, 41, 59, 0.5); /* Use card background for consistency */
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.1rem;
 }

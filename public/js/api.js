@@ -43,20 +43,20 @@ export async function fetchAnimeDetails(id) {
 }
 
 /**
- * ADD THIS FUNCTION
- * Fetch recently updated anime
- * @returns {Promise<Object>} Recently updated anime data
+ * Fetch all episodes for a given anime.
+ * @param {string} animeId - The ID of the anime (e.g., 'one-piece-100').
+ * @returns {Promise<Array>} Array of episode objects.
  */
-export async function fetchRecentlyUpdatedAnime() {
+export async function fetchEpisodes(animeId) {
     try {
-        const response = await fetch(`${API_BASE}/recently-updated`);
+        const response = await fetch(`${API_BASE}/episodes/${animeId}`);
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`Episode fetch failed: ${response.status}`);
         }
         const data = await response.json();
-        return data;
+        return data.results.episodes; // Return the array of episodes
     } catch (error) {
-        console.error('Error fetching recently updated anime:', error);
+        console.error('Error fetching episodes:', error);
         throw error;
     }
 }
@@ -117,3 +117,67 @@ export async function fetchRecentAnime() {
         throw error;
     }
 }
+
+/**
+ * Fetch recently updated anime
+ * @returns {Promise<Object>} Recently updated anime data
+ */
+export async function fetchRecentlyUpdatedAnime() {
+    try {
+        const response = await fetch(`${API_BASE}/recently-updated`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching recently updated anime:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch available streaming servers for an episode.
+ * @param {string} fullEpisodeId - The full ID of the episode from the episodes list (e.g., "one-piece-100?ep=2142").
+ * @returns {Promise<Array>} Array of available server objects.
+ */
+export async function fetchServersForEpisode(fullEpisodeId) {
+    try {
+        const [animeId, epQuery] = fullEpisodeId.split('?');
+        if (!animeId || !epQuery) {
+            throw new Error("Invalid episode ID format.");
+        }
+        const response = await fetch(`${API_BASE}/servers/${animeId}?${epQuery}`);
+        if (!response.ok) {
+            throw new Error(`Server fetch failed: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.results;
+    } catch (error) {
+        console.error('Error fetching servers:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch the actual streaming data (.m3u8 link, subtitles).
+ * @param {string} fullEpisodeId - The full ID of the episode (e.g., "one-piece-100?ep=2142").
+ * @param {string} serverName - The name of the server (e.g., 'HD-1').
+ * @param {string} type - The stream type ('sub' or 'dub').
+ * @returns {Promise<Object>} Object containing the stream link and tracks.
+ */
+export async function fetchStreamData(fullEpisodeId, serverName, type) {
+    try {
+        const url = `${API_BASE}/stream?id=${fullEpisodeId}&server=${serverName}&type=${type}`;
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Stream data fetch failed: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.results;
+    } catch (error) {
+        console.error('Error fetching stream data:', error);
+        throw error;
+    }
+}
+
