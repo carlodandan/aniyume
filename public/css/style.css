@@ -401,16 +401,17 @@
         }
 
         .player-wrapper {
-            width: 80%;
+            width: 70%;
             height: 500px;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            -webkit-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             position: relative;
         }
 
         #player {
-            width: 80%;
+            width: auto%;
             height: 100%;
         }
 
@@ -920,9 +921,15 @@
 
 /* ADD THESE STYLES FOR PLAYER LOADING/ERROR STATES */
 .player-container .loading-spinner {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     height: 50vh; /* Make it take up a good portion of the screen */
 }
 .player-container .spinner {
@@ -943,9 +950,15 @@
     100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
 }
 .player-container .error-message {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     height: 50vh;
     color: #f87171; /* A light red color for visibility */
     background: rgba(30, 41, 59, 0.5); /* Use card background for consistency */

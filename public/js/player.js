@@ -108,20 +108,22 @@ export async function initPlayer() {
         const newPlayer = new Artplayer({
             url: finalProxyUrl,
             container: playerContainer,
+            theme: '#8b5cf6',
             type: 'm3u8',
             autoplay: true,
+            playsInline: true,
+            autoOrientation: true,
             pip: true,
             setting: true,
             fullscreen: true,
             playbackRate: true,
             fastForward: true,
             mutex: true,
-            theme: '#8b5cf6',
             moreVideoAttr: {
-                    crossOrigin: 'anonymous',
-                    preload: 'none',
-                    playsInline: true,
-                },
+                crossOrigin: 'anonymous',
+                preload: 'none',
+                playsInline: true,
+            },
             customType: {
                 m3u8: (video, url, player) => {
                     if (Hls.isSupported()) {
