@@ -43,6 +43,26 @@ export async function fetchAnimeDetails(id) {
 }
 
 /**
+ * ADD THIS FUNCTION
+ * Fetch recently updated anime
+ * @returns {Promise<Object>} Recently updated anime data
+ */
+export async function fetchRecentlyUpdatedAnime() {
+    try {
+        const response = await fetch(`${API_BASE}/recently-updated`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching recently updated anime:', error);
+        throw error;
+    }
+}
+
+
+/**
  * Fetch anime by genre
  * @param {string} genre - Genre name
  * @returns {Promise<Array>} Array of anime in the genre

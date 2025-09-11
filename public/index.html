@@ -52,7 +52,7 @@
                         <h1 class="hero-title">Unlimited Anime Streaming, Anytime, Anywhere</h1>
                         <p class="hero-description">Watch thousands of anime series and movies with premium quality. No ads, no interruptions. The ultimate anime experience awaits you.</p>
                         <div class="hero-cta">
-                            <a href="#" class="cta-btn cta-primary" onclick="showPage('player')">
+                            <a href="#" class="cta-btn cta-primary" onclick="event.preventDefault(); showPage('recently-updated')">
                                 <i class="fas fa-play"></i>
                                 Let's Watch Anime
                             </a>
@@ -70,7 +70,17 @@
                 <div class="trending-grid anime-grid">
                     </div>
             </section>
-        </section> <section id="player-page" class="page">
+        </section>
+        
+        <section id="recently-updated-page" class="page">
+            <div class="container">
+                <h2 class="section-title"><i class="fas fa-history"></i> Recently Updated</h2>
+                <div class="recently-updated-grid anime-grid">
+                    </div>
+            </div>
+        </section>
+
+        <section id="player-page" class="page">
             <div class="container player-container">
                 <div class="player-wrapper">
                     <div id="player"></div>

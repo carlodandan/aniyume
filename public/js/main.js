@@ -1,5 +1,5 @@
 // Import API functions
-import { fetchHomeData, fetchAnimeDetails } from './api.js';
+import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime } from './api.js';
 
 function handleGoHome() {
     if (window.artplayer) {
@@ -8,7 +8,8 @@ function handleGoHome() {
     }
     showPage('home');
 }
-window.handleGoHome = handleGoHome; // Make it accessible from the HTML
+// Make it accessible from the HTML
+window.handleGoHome = handleGoHome;
 
 // Page navigation
 function showPage(pageId) {
@@ -47,9 +48,9 @@ function showPage(pageId) {
     } else if (pageId === 'home') {
         loadTrendingAnime();
     } else if (pageId === 'info') {
-        // This function is for deep linking and back/forward navigation
-        // It's not typically called from a direct nav click
         initInfoPage(); 
+    } else if (pageId === 'recently-updated') {
+        loadRecentlyUpdatedAnime();
     }
 }
 
@@ -90,6 +91,29 @@ async function loadTrendingAnime() {
     }
 }
 
+// Load recently updated anime from API
+async function loadRecentlyUpdatedAnime() {
+    const grid = document.querySelector('.recently-updated-grid');
+    if (!grid) return;
+
+    try {
+        grid.innerHTML = '<div class="loading">Loading recently updated anime...</div>';
+        const data = await fetchRecentlyUpdatedAnime();
+        
+        // --- THIS IS THE CORRECTED LINE ---
+        const animeList = data.results.data; 
+
+        if (animeList && animeList.length > 0) {
+            grid.innerHTML = animeList.map(anime => createAnimeCard(anime)).join('');
+        } else {
+            grid.innerHTML = '<div class="no-data">No recently updated anime available</div>';
+        }
+    } catch (error) {
+        console.error('Error loading recently updated anime:', error);
+        grid.innerHTML = '<div class="error">Failed to load recently updated anime. Please try again later.</div>';
+    }
+}
+
 // Create anime card HTML (vertical style, with optional trending number)
 function createAnimeCard(anime) {
     const title = anime.title || anime.name || 'Unknown Title';
@@ -120,7 +144,6 @@ function showAnimePlayer(animeId) {
     localStorage.setItem('selectedAnimeId', animeId);
     showPage('player');
 }
-window.showAnimePlayer = showAnimePlayer; // Make it globally accessible for onclick
 
 // Load info page details
 async function loadInfoPage(animeId) {
@@ -177,7 +200,6 @@ async function loadInfoPage(animeId) {
 function goBack() {
     history.back();
 }
-window.goBack = goBack;
 
 // Show info page for anime
 function showInfoPage(animeId) {
@@ -186,7 +208,6 @@ function showInfoPage(animeId) {
     showPage('info');
     loadInfoPage(animeId);
 }
-window.showInfoPage = showInfoPage; // Make it globally accessible for onclick
 
 // Initialize info page (placeholder for future enhancements)
 function initInfoPage() {
@@ -205,13 +226,13 @@ function updatePlayerPageDetails(details) {
     if (!details) {
         title.textContent = 'Anime Not Found';
         description.textContent = 'The details for this anime could not be loaded. Please go back and try again.';
-        poster.src = 'https://via.placeholder.com/300x400?text=Not+Found';
+        poster.src = 'https://placehold.co/300x400/8b5cf6/FFFFFF?text=Not+Found';
         meta.innerHTML = '';
         tags.innerHTML = '';
         return;
     }
 
-    poster.src = details.poster || 'https://via.placeholder.com/300x400?text=No+Image';
+    poster.src = details.poster || 'https://placehold.co/300x400/8b5cf6/FFFFFF?text=No+Image';
     poster.alt = `${details.title} poster`;
     title.textContent = details.title || 'Unknown Title';
 
@@ -335,50 +356,66 @@ async function initPlayer() {
     }
 }
 
+// ** ADD THESE LINES TO FIX THE ERROR **
+// Make functions globally accessible for onclick attributes
+window.showPage = showPage;
+window.toggleMenu = toggleMenu;
+window.showAnimePlayer = showAnimePlayer;
+window.goBack = goBack;
+window.showInfoPage = showInfoPage;
+
+
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const path = window.location.pathname;
 
+    // UPDATE THIS ROUTING LOGIC
     if (path === '/info' && urlParams.has('id')) {
         const animeId = urlParams.get('id');
         showInfoPage(animeId);
+    } else if (path === '/recently-updated') {
+        showPage('recently-updated');
     } else {
-        // Load trending anime on page load
-        loadTrendingAnime();
-
-        // Set up episode buttons
-        document.querySelectorAll('.episode-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.episode-btn').forEach(b => {
-                    b.classList.remove('active');
-                });
-                this.classList.add('active');
-                // In a real app, you would change the video source here
-            });
-        });
-
-        // Set up search functionality
-        const searchInput = document.querySelector('.search-input');
-        searchInput.addEventListener('keyup', function(e) {
-            if (e.key === 'Enter') {
-                alert(`Searching for: ${this.value}`);
-                this.value = '';
-            }
-        });
+        // For '/' and any other unknown path, go home.
+        showPage('home');
     }
+
+    // Set up episode buttons
+    document.querySelectorAll('.episode-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.episode-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            this.classList.add('active');
+            // In a real app, you would change the video source here
+        });
+    });
+
+    // Set up search functionality
+    const searchInput = document.querySelector('.search-input');
+    searchInput.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            alert(`Searching for: ${this.value}`);
+            this.value = '';
+        }
+    });
+    
     // Add this inside the DOMContentLoaded event listener function
     window.addEventListener('popstate', function(event) {
         const path = window.location.pathname;
         const urlParams = new URLSearchParams(window.location.search);
 
+        // UPDATE THIS ROUTING LOGIC AS WELL
         if (path.startsWith('/info') && urlParams.has('id')) {
             const animeId = urlParams.get('id');
             // Ensure the correct page is shown and data is loaded
             showPage('info');
             loadInfoPage(animeId);
+        } else if (path === '/recently-updated') {
+            showPage('recently-updated');
         } else {
-            // Default to the home page if the URL is anything else
+            // Default to the home page for '/' or anything else
             showPage('home');
         }
     });
