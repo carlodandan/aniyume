@@ -1,15 +1,12 @@
 // Import API functions
 import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime } from './api.js';
-// Import the player initializer from our new file using an absolute path
-import { initPlayer } from '/js/player.js';
+// Import the player initializer and the new player manager
+import { initPlayer, playerManager } from './player.js';
 
 let currentInfoPageAnimeId = null;
 
 function handleGoHome() {
-    if (window.artplayer) {
-        window.artplayer.destroy();
-        window.artplayer = null; // Dereference the player instance
-    }
+    playerManager.destroy(); // Use the manager to safely destroy the player
     showPage('home');
 }
 
@@ -259,4 +256,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-

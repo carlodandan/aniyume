@@ -109,7 +109,7 @@ export default {
             const targetUrl = TADB_API_BASE + url.pathname + url.search;
             try {
                 const response = await fetch(targetUrl, {
-                    headers: { 'User-Agent': 'TheAnimeDB (via Cloudflare Worker)' },
+                    headers: { 'User-Agent': 'AniYume (via Cloudflare Worker)' },
                 });
 
                 const data = await response.json();

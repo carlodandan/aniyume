@@ -1,11 +1,27 @@
-import { fetchEpisodes, fetchServersForEpisode, fetchStreamData } from './api.js';
+import { fetchEpisodes, fetchServersForEpisode, fetchStreamData, PROXY_URL } from './api.js';
+
+let player = null;
+
+/**
+ * Manages the Artplayer instance to prevent conflicts and ensure proper cleanup.
+ */
+export const playerManager = {
+    get: () => player,
+    set: (newInstance) => { player = newInstance; },
+    destroy: () => {
+        if (player) {
+            player.destroy();
+            player = null;
+        }
+    }
+};
 
 /**
  * Helper function to dynamically add a quality selector to ArtPlayer's settings.
- * @param {Artplayer} player - The Artplayer instance.
+ * @param {Artplayer} newPlayer - The Artplayer instance.
  * @param {Hls} hls - The Hls.js instance.
  */
-function addQualitySetting(player, hls) {
+function addQualitySetting(newPlayer, hls) {
     if (!hls || !hls.levels || hls.levels.length <= 1) {
         return; // No multiple quality levels available
     }
@@ -18,7 +34,7 @@ function addQualitySetting(player, hls) {
 
     qualities.unshift({ html: "Auto", value: -1, default: hls.autoLevelEnabled });
 
-    player.setting.add({
+    newPlayer.setting.add({
         name: "quality",
         html: "Quality",
         tooltip: "Auto",
@@ -34,9 +50,7 @@ function addQualitySetting(player, hls) {
  * Initializes the Artplayer instance by fetching episodes, servers, and stream data.
  */
 export async function initPlayer() {
-    if (window.artplayer) {
-        window.artplayer.destroy();
-    }
+    playerManager.destroy(); // Always destroy the old instance before creating a new one
 
     const playerContainer = document.getElementById('player');
     playerContainer.innerHTML = `
@@ -57,8 +71,6 @@ export async function initPlayer() {
             throw new Error("No episodes found for this anime.");
         }
 
-        // For now, we'll automatically play the first episode.
-        // A UI for episode selection could be added later.
         const firstEpisode = episodes[0];
         const fullEpisodeId = firstEpisode.id;
 
@@ -80,12 +92,22 @@ export async function initPlayer() {
         const sourceUrl = streamData.streamingLink.link.file;
         const subtitles = streamData.streamingLink.tracks || [];
 
-        const headers = { Referer: new URL(sourceUrl).origin + "/" };
-        const proxyUrl = `/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}&headers=${encodeURIComponent(JSON.stringify(headers))}`;
-        
-        window.artplayer = new window.Artplayer({
+        const headers = {};
+            if (sourceUrl) {
+                const url = new URL(sourceUrl);
+                headers.Referer = url.origin + "/";
+            } else {
+                headers.Referer = "https://megacloud.club/";
+            }
+
+            const proxyUrl = `${PROXY_URL}m3u8-proxy?url=`;
+
+            const finalProxyUrl = proxyUrl + encodeURIComponent(sourceUrl) +
+                                "&headers=" + encodeURIComponent(JSON.stringify(headers));
+
+        const newPlayer = new Artplayer({
+            url: finalProxyUrl,
             container: playerContainer,
-            url: proxyUrl,
             type: 'm3u8',
             autoplay: true,
             pip: true,
@@ -95,18 +117,23 @@ export async function initPlayer() {
             fastForward: true,
             mutex: true,
             theme: '#8b5cf6',
+            moreVideoAttr: {
+                    crossOrigin: 'anonymous',
+                    preload: 'none',
+                    playsInline: true,
+                },
             customType: {
                 m3u8: (video, url, player) => {
-                    if (window.Hls.isSupported()) {
+                    if (Hls.isSupported()) {
                         if (player.hls) player.hls.destroy();
-                        const hls = new window.Hls();
+                        const hls = new Hls();
                         hls.loadSource(url);
                         hls.attachMedia(video);
                         player.hls = hls;
 
                         player.on("destroy", () => hls.destroy());
 
-                        hls.on(window.Hls.Events.MANIFEST_PARSED, () => {
+                        hls.on(Hls.Events.MANIFEST_PARSED, () => {
                             addQualitySetting(player, hls);
                         });
                     } else {
@@ -115,15 +142,17 @@ export async function initPlayer() {
                 }
             },
         });
+        
+        playerManager.set(newPlayer); // Register the new instance with the manager
 
         if (subtitles.length > 0) {
             const defaultSub = subtitles.find(s => s.label.toLowerCase().includes('english')) || subtitles[0];
-            window.artplayer.setting.add({
+            newPlayer.setting.add({
                 name: 'subtitles',
                 html: 'Subtitles',
                 tooltip: defaultSub ? defaultSub.label : 'Off',
                 selector: [
-                    { html: 'Display', switch: true, onSwitch: (item) => { item.tooltip = item.switch ? 'Hide' : 'Show'; window.artplayer.subtitle.show = !item.switch; return !item.switch; }},
+                    { html: 'Display', switch: true, onSwitch: (item) => { item.tooltip = item.switch ? 'Hide' : 'Show'; newPlayer.subtitle.show = !item.switch; return !item.switch; }},
                     ...subtitles.map(sub => ({
                         html: sub.label,
                         url: sub.file,
@@ -131,12 +160,12 @@ export async function initPlayer() {
                     }))
                 ],
                 onSelect: (item) => {
-                    window.artplayer.subtitle.switch(item.url, { name: item.html });
+                    newPlayer.subtitle.switch(item.url, { name: item.html });
                     return item.html;
                 }
             });
             if (defaultSub) {
-                 window.artplayer.subtitle.switch(defaultSub.file, { name: defaultSub.label });
+                 newPlayer.subtitle.switch(defaultSub.file, { name: defaultSub.label });
             }
         }
 
@@ -145,4 +174,3 @@ export async function initPlayer() {
         playerContainer.innerHTML = `<div class="error-message">${err.message}</div>`;
     }
 }
-
