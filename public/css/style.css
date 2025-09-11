@@ -761,3 +761,99 @@
     color: #94a3b8;
     font-size: 14px;
 }
+
+/* --- Info Page Specific Styles --- */
+.info-container {
+    padding-top: 40px; /* Add some space from the top */
+}
+
+.back-btn {
+    background: transparent;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 500;
+    cursor: pointer;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    gap: 8px;
+    margin-bottom: 30px; /* Space between button and details */
+}
+
+.back-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    -webkit-transform: translateY(-2px);
+        -ms-transform: translateY(-2px);
+            transform: translateY(-2px);
+    -webkit-box-shadow: 0 5px 15px rgba(139, 92, 246, 0.2);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.2);
+}
+
+/* --- Redesigned Anime Details --- */
+
+/* Add spacing between detail elements */
+.detail-content h2,
+.detail-content-info .anime-title-info {
+    margin-bottom: 15px;
+}
+
+.detail-meta,
+.detail-meta-info {
+    margin-bottom: 20px;
+}
+
+.detail-description,
+.detail-description-info {
+    margin-bottom: 25px;
+    font-style: italic;
+    color: #cbd5e1;
+    line-height: 1.7;
+}
+
+/* Style the meta key-value pairs */
+.detail-meta,
+.detail-meta-info {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    font-size: 15px;
+}
+
+.detail-meta span,
+.detail-meta-info span {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    gap: 8px;
+}
+
+.meta-key {
+    color: #94a3b8; /* Dimmer color for the key text */
+    font-weight: 500;
+}
+
+/* --- Consistent Poster Image Size on Info Page --- */
+.anime-poster-info {
+    width: 100%; /* This will fill the 300px grid column */
+    height: 450px; /* A fixed height for all posters */
+    -o-object-fit: cover;
+       object-fit: cover; /* Prevents image distortion by cropping to fit */
+    border-radius: 12px;
+    -webkit-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}

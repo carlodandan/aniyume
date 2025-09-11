@@ -3,25 +3,44 @@ import { fetchHomeData, fetchAnimeDetails } from './api.js';
 
 // Page navigation
 function showPage(pageId) {
+    // Hide all pages
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
     });
 
+    // Remove 'active' class from all nav links
     document.querySelectorAll('nav a').forEach(link => {
         link.classList.remove('active');
     });
 
+    // Show the target page
     const pageElement = document.getElementById(`${pageId}-page`);
     if (pageElement) {
         pageElement.classList.add('active');
     }
 
+    // Add 'active' class to the correct nav link
+    const activeLink = document.querySelector(`nav a[onclick*="showPage('${pageId}')"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+
+    // Update the browser URL and history
+    const path = pageId === 'home' ? '/' : `/${pageId}`;
+    // Only push state if the path is actually changing
+    if (window.location.pathname !== path) {
+         history.pushState({pageId: pageId}, null, path);
+    }
+    
+    // Run page-specific functions
     if (pageId === 'player') {
         initPlayer();
     } else if (pageId === 'home') {
         loadTrendingAnime();
     } else if (pageId === 'info') {
-        initInfoPage();
+        // This function is for deep linking and back/forward navigation
+        // It's not typically called from a direct nav click
+        initInfoPage(); 
     }
 }
 
@@ -94,18 +113,8 @@ function showAnimePlayer(animeId) {
 }
 window.showAnimePlayer = showAnimePlayer; // Make it globally accessible for onclick
 
-// Show info page for anime
-function showInfoPage(animeId) {
-    if (!animeId) return;
-    history.pushState(null, '', `/info?id=${animeId}`);
-    showPage('info');
-    loadInfoPage(animeId);
-}
-window.showInfoPage = showInfoPage; // Make it globally accessible for onclick
-
 // Load info page details
 async function loadInfoPage(animeId) {
-    console.log('loadInfoPage called with animeId:', animeId);
     const poster = document.querySelector('.anime-poster-info');
     const title = document.querySelector('.anime-title-info');
     const meta = document.querySelector('.detail-meta-info');
@@ -120,24 +129,8 @@ async function loadInfoPage(animeId) {
     tags.innerHTML = '';
 
     try {
-        const animeData = await fetchAnimeDetails(animeId);
-        console.log('fetchAnimeDetails response:', animeData);
-        console.log('Keys in results:', Object.keys(animeData.results || {}));
-        console.log('Sample results content:', animeData.results);
-        // Try to find the correct details object
-        let details = animeData.results?.data;
-        if (!details) {
-            // Try alternative keys if data is not found
-            const keys = Object.keys(animeData.results || {});
-            if (keys.length > 0) {
-                // Use 'data' key explicitly since keys are ['data', 'seasons']
-                if (keys.includes('data')) {
-                    details = animeData.results['data'];
-                } else {
-                    details = animeData.results[keys[0]];
-                }
-            }
-        }
+        const apiResponse = await fetchAnimeDetails(animeId);
+        const details = apiResponse.results?.data;
 
         if (!details) {
             title.textContent = 'Anime Not Found';
@@ -148,26 +141,21 @@ async function loadInfoPage(animeId) {
 
         poster.src = details.poster || 'https://via.placeholder.com/300x400?text=No+Image';
         poster.alt = `${details.title} poster`;
-        console.log('Setting title:', details.title);
         title.textContent = details.title || 'Unknown Title';
-        console.log('Title set:', title.textContent);
 
         const airedYear = details.animeInfo?.Aired?.match(/\d{4}/)?.[0] || 'N/A';
         const duration = details.animeInfo?.Duration || 'N/A';
         const malScore = details.animeInfo?.['MAL Score'] || 'N/A';
 
         meta.innerHTML = `
-            <span>${details.showType || 'TV'}</span>
-            <span>${airedYear}</span>
-            <span>${duration}</span>
-            <span class="anime-rating"><i class="fas fa-star"></i> ${malScore}</span>
+            <span><strong class="meta-key">Type:</strong> ${details.showType || 'TV'}</span>
+            <span><strong class="meta-key">Premiere:</strong> ${airedYear}</span>
+            <span><strong class="meta-key">Duration:</strong> ${duration}</span>
+            <span class="anime-rating"><strong class="meta-key">Rating:</strong> <i class="fas fa-star"></i> ${malScore}</span>
         `;
-        console.log('Meta set:', meta.innerHTML);
 
         description.textContent = details.animeInfo?.Overview || 'No description available.';
-        console.log('Description set:', description.textContent);
         tags.innerHTML = details.animeInfo?.Genres?.map(genre => `<span class="tag">${genre}</span>`).join('') || '';
-        console.log('Tags set:', tags.innerHTML);
     } catch (error) {
         console.error('Error loading anime info:', error);
         title.textContent = 'Error loading anime info';
@@ -181,6 +169,15 @@ function goBack() {
     history.back();
 }
 window.goBack = goBack;
+
+// Show info page for anime
+function showInfoPage(animeId) {
+    if (!animeId) return;
+    history.pushState(null, '', `/info?id=${animeId}`);
+    showPage('info');
+    loadInfoPage(animeId);
+}
+window.showInfoPage = showInfoPage; // Make it globally accessible for onclick
 
 // Initialize info page (placeholder for future enhancements)
 function initInfoPage() {
@@ -205,26 +202,24 @@ function updatePlayerPageDetails(details) {
         return;
     }
 
-    const animeData = details.data;
+    poster.src = details.poster || 'https://via.placeholder.com/300x400?text=No+Image';
+    poster.alt = `${details.title} poster`;
+    title.textContent = details.title || 'Unknown Title';
 
-    poster.src = animeData.poster || 'https://via.placeholder.com/300x400?text=No+Image';
-    poster.alt = `${animeData.title} poster`;
-    title.textContent = animeData.title || 'Unknown Title';
-
-    const airedYear = animeData.animeInfo?.Aired?.match(/\d{4}/)?.[0] || 'N/A';
-    const duration = animeData.animeInfo?.Duration || 'N/A';
-    const malScore = animeData.animeInfo?.['MAL Score'] || 'N/A';
+    const airedYear = details.animeInfo?.Aired?.match(/\d{4}/)?.[0] || 'N/A';
+    const duration = details.animeInfo?.Duration || 'N/A';
+    const malScore = details.animeInfo?.['MAL Score'] || 'N/A';
 
     meta.innerHTML = `
-        <span>${animeData.showType || 'TV'}</span>
-        <span>${airedYear}</span>
-        <span>${duration}</span>
-        <span class="anime-rating"><i class="fas fa-star"></i> ${malScore}</span>
-    `;
+            <span><strong class="meta-key">Type:</strong> ${details.showType || 'TV'}</span>
+            <span><strong class="meta-key">Premiere:</strong> ${airedYear}</span>
+            <span><strong class="meta-key">Duration:</strong> ${duration}</span>
+            <span class="anime-rating"><strong class="meta-key">Rating:</strong> <i class="fas fa-star"></i> ${malScore}</span>
+        `;
 
-    description.textContent = animeData.animeInfo?.Overview || 'No description available.';
+    description.textContent = details.animeInfo?.Overview || 'No description available.';
 
-    tags.innerHTML = animeData.animeInfo?.Genres?.map(genre => `<span class="tag">${genre}</span>`).join('') || '';
+    tags.innerHTML = details.animeInfo?.Genres?.map(genre => `<span class="tag">${genre}</span>`).join('') || '';
 }
 
 // Initialize video player
@@ -323,8 +318,8 @@ async function initPlayer() {
     }
 
     try {
-        const animeData = await fetchAnimeDetails(animeId);
-        updatePlayerPageDetails(animeData.results);
+        const apiResponse = await fetchAnimeDetails(animeId);
+        updatePlayerPageDetails(apiResponse.results?.data);
     } catch (error) {
         console.error('Error loading anime details:', error);
         updatePlayerPageDetails(null);
@@ -363,4 +358,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    // Add this inside the DOMContentLoaded event listener function
+    window.addEventListener('popstate', function(event) {
+        const path = window.location.pathname;
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (path.startsWith('/info') && urlParams.has('id')) {
+            const animeId = urlParams.get('id');
+            // Ensure the correct page is shown and data is loaded
+            showPage('info');
+            loadInfoPage(animeId);
+        } else {
+            // Default to the home page if the URL is anything else
+            showPage('home');
+        }
+    });
 });

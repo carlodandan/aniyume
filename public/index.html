@@ -7,23 +7,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer@3.6.10/dist/artplayer.css">
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header>
         <div class="container header-content">
-            <a href="#" class="logo" onclick="showPage('home')">
+            <a href="/" class="logo" onclick="event.preventDefault(); showPage('home')">
                 <i class="fas fa-play-circle"></i>
                 Ani<span>Yu</span>me
             </a>
             
             <nav id="nav">
                 <ul>
-                    <li><a href="#" class="active" onclick="showPage('home')">Home</a></li>
-                    <li><a href="#" onclick="showPage('browse')">Browse</a></li>
-                    <li><a href="#" onclick="showPage('trending')">Trending</a></li>
-                    <li><a href="#" onclick="showPage('new')">New</a></li>
-                    <li><a href="#" onclick="showPage('favorites')">Favorites</a></li>
+                    <li><a href="/" class="active" onclick="event.preventDefault(); showPage('home')">Home</a></li>
+                    <li><a href="/browse" onclick="event.preventDefault(); showPage('browse')">Browse</a></li>
+                    <li><a href="/trending" onclick="event.preventDefault(); showPage('trending')">Trending</a></li>
+                    <li><a href="/new" onclick="event.preventDefault(); showPage('new')">New</a></li>
+                    <li><a href="/favorites" onclick="event.preventDefault(); showPage('favorites')">Favorites</a></li>
                 </ul>
             </nav>
             
@@ -44,7 +44,6 @@
     </header>
 
     <main>
-        <!-- Home Page -->
         <section id="home-page" class="page active">
             <div class="hero">
                 <div class="hero-bg"></div>
@@ -69,12 +68,9 @@
             <section class="container">
                 <h2 class="section-title"><i class="fas fa-fire"></i> Trending Now</h2>
                 <div class="trending-grid anime-grid">
-                    <!-- Dynamic content will be loaded here -->
-                </div>
+                    </div>
             </section>
-
-        <!-- Player Page -->
-        <section id="player-page" class="page">
+        </section> <section id="player-page" class="page">
             <div class="container player-container">
                 <div class="player-wrapper">
                     <div id="player"></div>
@@ -160,16 +156,12 @@
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Other pages (simplified for demo) -->
-        <section id="browse-page" class="page">
+        </section> <section id="browse-page" class="page">
             <div class="container">
                 <h2 class="section-title"><i class="fas fa-compass"></i> Browse All Anime</h2>
                 <p class="hero-description">Explore our complete library of anime series and movies.</p>
                 <div class="anime-grid">
-                    <!-- Repeat anime cards here -->
-                </div>
+                    </div>
             </div>
         </section>
 
@@ -178,8 +170,7 @@
                 <h2 class="section-title"><i class="fas fa-fire"></i> Trending Anime</h2>
                 <p class="hero-description">See what's popular right now in the anime community.</p>
                 <div class="anime-grid">
-                    <!-- Repeat anime cards here -->
-                </div>
+                    </div>
             </div>
         </section>
 
@@ -188,8 +179,7 @@
                 <h2 class="section-title"><i class="fas fa-rocket"></i> New Releases</h2>
                 <p class="hero-description">Discover the latest anime series and episodes.</p>
                 <div class="anime-grid">
-                    <!-- Repeat anime cards here -->
-                </div>
+                    </div>
             </div>
         </section>
 
@@ -198,14 +188,14 @@
                 <h2 class="section-title"><i class="fas fa-heart"></i> Your Favorites</h2>
                 <p class="hero-description">Your personal collection of beloved anime.</p>
                 <div class="anime-grid">
-                    <!-- Repeat anime cards here -->
-                </div>
+                    </div>
             </div>
         </section>
-        <!-- Info Page -->
+        
         <section id="info-page" class="page">
             <div class="container info-container">
-                <button onclick="goBack()" class="back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+                <button onclick="goBack()" class="back-btn"><i class="fas fa-arrow-left"></i> Go Back</button>
+                
                 <div class="anime-details">
                     <img src="" alt="Anime Poster" class="anime-poster-info">
                     <div class="detail-content-info">
@@ -272,6 +262,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/artplayer@3.6.10/dist/artplayer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.0.0/dist/hls.min.js"></script>
-    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="/js/main.js"></script>
 </body>
 </html>

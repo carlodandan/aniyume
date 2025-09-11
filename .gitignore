@@ -25,6 +25,7 @@ pnpm-debug.log*
 # local
 local.sh
 remote.sh
+secrets.txt
 
 # vercel
 .vercel
