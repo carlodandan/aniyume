@@ -58,72 +58,63 @@ export async function initPlayer() {
             <div class="spinner"></div>
         </div>`;
 
-    const animeId = localStorage.getItem('selectedAnimeId');
-    if (!animeId) {
-        playerContainer.innerHTML = `<div class="error-message">No anime ID was provided.</div>`;
+    const urlParams = new URLSearchParams(window.location.search);
+    const fullEpisodeId = urlParams.get('ep');
+
+    if (!fullEpisodeId) {
+        playerContainer.innerHTML = `<div class="error-message">No episode ID was provided.</div>`;
         return;
     }
 
     try {
-        // Step 1: Fetch all episodes for the anime
-        const episodes = await fetchEpisodes(animeId);
-        if (!episodes || episodes.length === 0) {
-            throw new Error("No episodes found for this anime.");
-        }
-
-        const firstEpisode = episodes[0];
-        const fullEpisodeId = firstEpisode.id;
-
-        // Step 2: Fetch servers for the selected episode
+        // Fetch servers for the selected episode
         const servers = await fetchServersForEpisode(fullEpisodeId);
         if (!servers || servers.length === 0) {
             throw new Error("No streaming servers were found for this episode.");
         }
-        
+
         const preferredServer = servers.find(s => s.serverName === 'HD-2' && s.type === 'sub') || servers.find(s => s.type === 'sub') || servers[0];
-        
+
         if (!preferredServer) {
             throw new Error("Could not find a suitable streaming server.");
         }
 
-        // Step 3: Fetch the stream data from the chosen server
+        // Fetch the stream data from the chosen server
         const streamData = await fetchStreamData(fullEpisodeId, preferredServer.serverName, preferredServer.type);
 
         const sourceUrl = streamData.streamingLink.link.file;
         const subtitles = streamData.streamingLink.tracks || [];
 
         const headers = {};
-            if (sourceUrl) {
-                const url = new URL(sourceUrl);
-                headers.Referer = url.origin + "/";
-            } else {
-                headers.Referer = "https://megacloud.club/";
-            }
+        if (sourceUrl) {
+            const url = new URL(sourceUrl);
+            headers.Referer = url.origin + "/";
+        } else {
+            headers.Referer = "https://megacloud.club/";
+        }
 
-            const proxyUrl = `${PROXY_URL}m3u8-proxy?url=`;
+        const proxyUrl = `${PROXY_URL}m3u8-proxy?url=`;
 
-            const finalProxyUrl = proxyUrl + encodeURIComponent(sourceUrl) +
-                                "&headers=" + encodeURIComponent(JSON.stringify(headers));
+        const finalProxyUrl = proxyUrl + encodeURIComponent(sourceUrl) +
+                            "&headers=" + encodeURIComponent(JSON.stringify(headers));
 
         const newPlayer = new Artplayer({
             url: finalProxyUrl,
             container: playerContainer,
-            theme: '#8b5cf6',
             type: 'm3u8',
             autoplay: true,
-            playsInline: true,
-            autoOrientation: true,
             pip: true,
             setting: true,
             fullscreen: true,
             playbackRate: true,
             fastForward: true,
             mutex: true,
+            theme: '#8b5cf6',
             moreVideoAttr: {
-                crossOrigin: 'anonymous',
-                preload: 'none',
-                playsInline: true,
-            },
+                    crossOrigin: 'anonymous',
+                    preload: 'none',
+                    playsInline: true,
+                },
             customType: {
                 m3u8: (video, url, player) => {
                     if (Hls.isSupported()) {
@@ -144,7 +135,7 @@ export async function initPlayer() {
                 }
             },
         });
-        
+
         playerManager.set(newPlayer); // Register the new instance with the manager
 
         if (subtitles.length > 0) {

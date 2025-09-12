@@ -1,5 +1,5 @@
 // Import API functions
-import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime } from './api.js';
+import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes } from './api.js';
 // Import the player initializer and the new player manager
 import { initPlayer, playerManager } from './player.js';
 
@@ -35,18 +35,20 @@ function showPage(pageId) {
     }
 
     // Update the browser URL and history
-    const path = pageId === 'home' ? '/' : `/${pageId}`;
-    if (window.location.pathname !== path) {
-         history.pushState({pageId: pageId}, null, path);
+    if (pageId !== 'watch') { // The watch URL is handled by navigateToPlayer
+        const path = pageId === 'home' ? '/' : `/${pageId}`;
+        if (window.location.pathname !== path) {
+             history.pushState({pageId: pageId}, null, path);
+        }
     }
-    
+
     // Run page-specific functions
-    if (pageId === 'player') {
+    if (pageId === 'watch') {
         initPlayer(); // This now calls the function from player.js
     } else if (pageId === 'home') {
         loadTrendingAnime();
     } else if (pageId === 'info') {
-        initInfoPage(); 
+        initInfoPage();
     } else if (pageId === 'recently-updated') {
         loadRecentlyUpdatedAnime();
     }
@@ -133,6 +135,33 @@ function showAnimePlayer(animeId) {
     showPage('player');
 }
 
+async function navigateToPlayer(animeId) {
+    try {
+        const episodes = await fetchEpisodes(animeId);
+        if (!episodes || episodes.length === 0) {
+            throw new Error("No episodes found for this anime.");
+        }
+        const firstEpisode = episodes[0];
+        const fullEpisodeId = firstEpisode.id;
+
+        const url = `/watch?ep=${encodeURIComponent(fullEpisodeId)}`;
+        history.pushState({ pageId: 'watch', episodeId: fullEpisodeId }, null, url);
+        showPage('watch');
+    } catch (error) {
+        console.error("Failed to navigate to player:", error);
+        // You could show an error message to the user here
+    }
+}
+
+
+function watchAnimeFromInfo() {
+    if (!currentInfoPageAnimeId) {
+        console.error("Could not find the anime ID to play.");
+        return;
+    }
+    navigateToPlayer(currentInfoPageAnimeId);
+}
+
 // Load info page details
 async function loadInfoPage(animeId) {
     const poster = document.querySelector('.anime-poster-info');
@@ -196,14 +225,6 @@ function showInfoPage(animeId) {
     loadInfoPage(animeId);
 }
 
-function watchAnimeFromInfo() {
-    if (!currentInfoPageAnimeId) {
-        console.error("Could not find the anime ID to play.");
-        return;
-    }
-    showAnimePlayer(currentInfoPageAnimeId);
-}
-
 function initInfoPage() {
     // Currently handled by loadInfoPage in showInfoPage
 }
@@ -211,7 +232,6 @@ function initInfoPage() {
 // Make functions globally accessible for onclick attributes in HTML
 window.showPage = showPage;
 window.toggleMenu = toggleMenu;
-window.showAnimePlayer = showAnimePlayer;
 window.goBack = goBack;
 window.showInfoPage = showInfoPage;
 window.watchAnimeFromInfo = watchAnimeFromInfo;
@@ -222,7 +242,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const path = window.location.pathname;
 
-    if (path === '/info' && urlParams.has('id')) {
+    if (path === '/watch' && urlParams.has('ep')) {
+        showPage('watch');
+    } else if (path === '/info' && urlParams.has('id')) {
         const animeId = urlParams.get('id');
         showInfoPage(animeId);
     } else if (path === '/recently-updated') {
@@ -239,13 +261,15 @@ document.addEventListener('DOMContentLoaded', function() {
             this.value = '';
         }
     });
-    
+
     // Handle browser back/forward navigation
     window.addEventListener('popstate', function(event) {
         const path = window.location.pathname;
         const urlParams = new URLSearchParams(window.location.search);
 
-        if (path.startsWith('/info') && urlParams.has('id')) {
+        if (path.startsWith('/watch') && urlParams.has('ep')) {
+            showPage('watch');
+        } else if (path.startsWith('/info') && urlParams.has('id')) {
             const animeId = urlParams.get('id');
             showPage('info');
             loadInfoPage(animeId);
