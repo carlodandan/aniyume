@@ -12,7 +12,7 @@
     }
 
     .container {
-        padding: 0 15px;
+        padding: 0;
     }
 
     .section-title {
@@ -84,7 +84,7 @@
         grid-template-columns: 1fr;
     }
      .breadcrumb {
-        padding: 20px 0;
+        padding: 20px 0 0 20px;
     }
 }
 
