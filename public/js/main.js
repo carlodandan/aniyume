@@ -1,5 +1,5 @@
 // Import API functions
-import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes } from './api.js';
+import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes, fetchMostPopularAnime } from './api.js';
 // Import the player initializer and the new player manager
 import { initPlayer, playerManager } from './player.js';
 
@@ -44,11 +44,13 @@ function showPage(pageId) {
 
     // Run page-specific functions
     if (pageId === 'watch') {
-        initPlayer(); // This now calls the function from player.js
+        initPlayer();
     } else if (pageId === 'home') {
         loadTrendingAnime();
     } else if (pageId === 'info') {
         initInfoPage();
+    } else if (pageId === 'popular') { // Add this case
+        loadMostPopularAnime();
     } else if (pageId === 'recently-updated') {
         loadRecentlyUpdatedAnime();
     }
@@ -103,6 +105,28 @@ async function loadRecentlyUpdatedAnime() {
     } catch (error) {
         console.error('Error loading recently updated anime:', error);
         grid.innerHTML = '<div class="error">Failed to load recently updated anime. Please try again later.</div>';
+    }
+}
+
+// Load most popular anime from API
+async function loadMostPopularAnime() {
+    const grid = document.querySelector('.popular-grid');
+    if (!grid) return;
+
+    try {
+        grid.innerHTML = '<div class="loading">Loading most popular anime...</div>';
+        const data = await fetchMostPopularAnime();
+        // Corrected line to access the nested data array
+        const animeList = data.results.data;
+
+        if (animeList && animeList.length > 0) {
+            grid.innerHTML = animeList.map(anime => createAnimeCard(anime)).join('');
+        } else {
+            grid.innerHTML = '<div class="no-data">No popular anime available</div>';
+        }
+    } catch (error) {
+        console.error('Error loading most popular anime:', error);
+        grid.innerHTML = '<div class="error">Failed to load most popular anime. Please try again later.</div>';
     }
 }
 
@@ -242,7 +266,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const path = window.location.pathname;
 
-    if (path === '/watch' && urlParams.has('ep')) {
+    if (path === '/popular') {
+        showPage('popular');
+    } else if (path === '/watch' && urlParams.has('ep')) {
         showPage('watch');
     } else if (path === '/info' && urlParams.has('id')) {
         const animeId = urlParams.get('id');
@@ -267,7 +293,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const path = window.location.pathname;
         const urlParams = new URLSearchParams(window.location.search);
 
-        if (path.startsWith('/watch') && urlParams.has('ep')) {
+        if (path === '/popular') {
+            showPage('popular');
+        } else if (path.startsWith('/watch') && urlParams.has('ep')) {
             showPage('watch');
         } else if (path.startsWith('/info') && urlParams.has('id')) {
             const animeId = urlParams.get('id');

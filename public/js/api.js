@@ -181,3 +181,20 @@ export async function fetchStreamData(fullEpisodeId, serverName, type) {
     }
 }
 
+/**
+ * Fetch most popular anime
+ * @returns {Promise<Object>} Most popular anime data
+ */
+export async function fetchMostPopularAnime() {
+    try {
+        const response = await fetch(`${API_BASE}/most-popular`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching most popular anime:', error);
+        throw error;
+    }
+}

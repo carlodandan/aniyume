@@ -21,7 +21,7 @@
                 <ul>
                     <li><a href="/" class="active" onclick="event.preventDefault(); handleGoHome()">Home</a></li>
                     <li><a href="/browse" onclick="event.preventDefault(); showPage('browse')">Browse</a></li>
-                    <li><a href="/trending" onclick="event.preventDefault(); showPage('trending')">Trending</a></li>
+                    <li><a href="/popular" onclick="event.preventDefault(); showPage('popular')">Popular</a></li>
                     <li><a href="/new" onclick="event.preventDefault(); showPage('new')">New</a></li>
                     <li><a href="/favorites" onclick="event.preventDefault(); showPage('favorites')">Favorites</a></li>
                 </ul>
@@ -49,7 +49,9 @@
                 <div class="hero-bg"></div>
                 <div class="container">
                     <div class="hero-content">
-                        <h1 class="hero-title">Unlimited Anime Streaming, Anytime, Anywhere</h1>
+                        <h1 class="hero-title">
+                            Ani<span class="highlight">Yu</span>me
+                        </h1>
                         <p class="hero-description">Watch thousands of anime series and movies with premium quality. No ads, no interruptions. The ultimate anime experience awaits you.</p>
                         <div class="hero-cta">
                             <a href="#" class="cta-btn cta-primary" onclick="event.preventDefault(); showPage('recently-updated')">
@@ -97,12 +99,11 @@
             </div>
         </section>
 
-        <section id="trending-page" class="page">
+        <section id="popular-page" class="page">
             <div class="container">
-                <h2 class="section-title"><i class="fas fa-fire"></i> Trending Anime</h2>
-                <p class="hero-description">See what's popular right now in the anime community.</p>
-                <div class="anime-grid">
-                    </div>
+                <h2 class="section-title"><i class="fas fa-star"></i> Most Popular</h2>
+                <div class="popular-grid anime-grid">
+                </div>
             </div>
         </section>
 
@@ -162,8 +163,8 @@
                     <h3>Navigation</h3>
                     <ul>
                         <li><a href="#" onclick="showPage('home')">Home</a></li>
-                        <li><a href="#" onclick="showPage('browse')">Browse</a></li>
-                        <li><a href="#" onclick="showPage('trending')">Trending</a></li>
+                        <li><a href="/browse" onclick="event.preventDefault(); showPage('browse')">Browse</a></li>
+                        <li><a href="/popular" onclick="event.preventDefault(); showPage('popular')">Popular</a></li>
                         <li><a href="#" onclick="showPage('new')">New Releases</a></li>
                     </ul>
                 </div>
