@@ -45,7 +45,7 @@ export async function fetchAnimeDetails(id) {
 /**
  * Fetch all episodes for a given anime.
  * @param {string} animeId - The ID of the anime (e.g., 'one-piece-100').
- * @returns {Promise<Array>} Array of episode objects.
+ * @returns {Promise<Object>} Object containing total episodes and the episode list.
  */
 export async function fetchEpisodes(animeId) {
     try {
@@ -54,7 +54,7 @@ export async function fetchEpisodes(animeId) {
             throw new Error(`Episode fetch failed: ${response.status}`);
         }
         const data = await response.json();
-        return data.results.episodes; // Return the array of episodes
+        return data.results; // Return the entire results object
     } catch (error) {
         console.error('Error fetching episodes:', error);
         throw error;

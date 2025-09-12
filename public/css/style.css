@@ -402,6 +402,7 @@
         /* Player Page */
         .player-container {
             padding: 40px 0;
+            margin-left: 40px;
         }
 
         .player-wrapper {
@@ -970,4 +971,50 @@
     padding: 20px;
     text-align: center;
     font-size: 1.1rem;
+}
+
+/* --- Player Page Selectors --- */
+.selectors-container {
+    display: -ms-grid;
+    display: grid;
+    /* Change this line */
+    grid-template-columns: 250px 250px; /* Two columns, each 250px wide */
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.server-selector h3, .episode-selector-container h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--primary);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    gap: 10px;
+}
+
+.selector-dropdown {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #cbd5e1;
+    font-size: 14px;
+    cursor: pointer;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+.selector-dropdown:focus {
+    outline: none;
+    border-color: var(--primary);
 }
