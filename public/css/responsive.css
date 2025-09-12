@@ -1,0 +1,190 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
+/* General Mobile Adjustments */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+}
+
+
+/* Header */
+@media (max-width: 576px) {
+    .logo {
+        font-size: 20px;
+    }
+}
+
+
+/* Hero Section */
+@media (max-width: 768px) {
+    .hero {
+        height: 60vh;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-description {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero {
+        text-align: center;
+        height: auto;
+        padding: 40px 0;
+    }
+    .hero-cta {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+}
+
+/* Anime Card */
+@media (max-width: 576px) {
+    .anime-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    .anime-thumb-vertical {
+        height: 250px;
+    }
+}
+
+/* Watch Page */
+@media (max-width: 768px) {
+    .watch-main-content .player-wrapper {
+        width: 100%;
+    }
+    .selectors-container {
+        margin-left: 0;
+        -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+    }
+     .breadcrumb {
+        padding: 20px 0;
+    }
+}
+
+
+/* Info Page */
+@media (max-width: 768px) {
+    .anime-details {
+        -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .anime-poster-info {
+        margin: 0 auto 20px;
+        max-width: 250px;
+        height: auto;
+    }
+
+    .info-page-actions {
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+    }
+}
+
+/* --- Watch Page Enhancements --- */
+
+/* Add a subtle background and more padding to the entire watch page section */
+#watch-page {
+    background: rgba(15, 23, 42, 0.7); /* A slightly different background to distinguish it */
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+/* Improve the main content area */
+.watch-main-content {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    gap: 20px; /* Adds space between the player and the selectors */
+}
+
+
+/* Make the player's shadow more pronounced */
+.player-wrapper {
+    -webkit-box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Polish the server and episode selectors */
+.selectors-container {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 0 auto; /* Center the selectors */
+    width: 90%; /* Match the player wrapper width */
+    gap: 20px;
+}
+
+.server-selector h3,
+.episode-selector-container h3 {
+    margin-bottom: 10px; /* Reduced margin for a tighter look */
+    font-size: 1.2rem; /* Slightly smaller heading */
+    border-bottom: 2px solid var(--primary); /* Adds a nice underline */
+    padding-bottom: 8px;
+    color: white;
+}
+
+.selector-dropdown:hover {
+    border-color: var(--primary);
+    background: var(--secondary);
+}
+
+
+/* --- Responsive improvements for the Watch Page --- */
+@media (max-width: 768px) {
+    .watch-layout {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .selectors-container {
+        width: 100%;
+        margin-left: 0;
+        padding: 15px;
+        -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr; /* Stack selectors on smaller screens */
+        gap: 20px;
+    }
+
+    .watch-main-content .player-wrapper {
+        width: 100%; /* Make the player full-width on mobile */
+    }
+    
+    .watch-info-sidebar {
+        padding: 15px;
+    }
+}
