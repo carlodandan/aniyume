@@ -161,10 +161,17 @@ function showAnimePlayer(animeId) {
 
 async function navigateToPlayer(animeId) {
     try {
-        const episodes = await fetchEpisodes(animeId);
+        // fetchEpisodes now returns an object: { totalEpisodes, episodes }
+        const episodeData = await fetchEpisodes(animeId);
+
+        // Access the nested .episodes array
+        const episodes = episodeData.episodes;
+
         if (!episodes || episodes.length === 0) {
             throw new Error("No episodes found for this anime.");
         }
+
+        // Now we can safely get the first episode
         const firstEpisode = episodes[0];
         const fullEpisodeId = firstEpisode.id;
 
@@ -173,7 +180,7 @@ async function navigateToPlayer(animeId) {
         showPage('watch');
     } catch (error) {
         console.error("Failed to navigate to player:", error);
-        // You could show an error message to the user here
+        alert("Could not load episodes for this anime. Please try again later.");
     }
 }
 
@@ -218,7 +225,7 @@ async function loadInfoPage(animeId) {
 
         const airedYear = details.animeInfo?.Aired?.match(/\d{4}/)?.[0] || 'N/A';
         const duration = details.animeInfo?.Duration || 'N/A';
-        const malScore = details.animeInfo?.['MAL Score'] || 'N/A';
+        const malScore = details.animeInfo?.["MAL Score"] || 'N/A';
 
         meta.innerHTML = `
             <span><strong class="meta-key">Type:</strong> ${details.showType || 'TV'}</span>

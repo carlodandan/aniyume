@@ -39,7 +39,7 @@
 
         /* Header Styles */
         header {
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.5);
             -webkit-backdrop-filter: blur(10px);
                     backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -208,7 +208,7 @@
         }
 
         section {
-            padding: 60px 0;
+            padding: 10px 0;
         }
 
         /* Hero Section */
@@ -402,7 +402,7 @@
         /* Player Page */
         .player-container {
             padding: 40px 0;
-            margin-left: 40px;
+            margin-left: 20px;
         }
 
         .player-wrapper {
@@ -416,7 +416,7 @@
         }
 
         #player {
-            width: auto%;
+            width: 100%;
             height: 100%;
         }
 
@@ -975,12 +975,11 @@
 
 /* --- Player Page Selectors --- */
 .selectors-container {
-    display: -ms-grid;
     display: grid;
-    /* Change this line */
-    grid-template-columns: 250px 250px; /* Two columns, each 250px wide */
+    grid-template-columns: 250px 250px; /* Two columns */
     gap: 30px;
-    margin-top: 30px;
+    margin-top: 10px;
+    margin-left: 70px;
 }
 
 .server-selector h3, .episode-selector-container h3 {
@@ -1017,4 +1016,137 @@
 .selector-dropdown:focus {
     outline: none;
     border-color: var(--primary);
+}
+
+/* --- Breadcrumb Styles --- */
+.breadcrumb {
+    padding: 20px 0 0 40px;
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.breadcrumb a {
+    color: #cbd5e1;
+    text-decoration: none;
+    -webkit-transition: color 0.3s;
+    -o-transition: color 0.3s;
+    transition: color 0.3s;
+}
+
+.breadcrumb a:hover {
+    color: var(--primary);
+}
+
+.breadcrumb-separator {
+    margin: 0 10px;
+}
+
+/* --- New Watch Page Layout --- */
+.watch-layout {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 40px;
+    padding-top: 10px;   /* smaller top padding */
+    padding-bottom: 40px; /* keep bottom padding as is */
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.watch-main-content .player-wrapper {
+    width: 90%; /* Reduce size by 10% */
+    margin: 0 auto; /* Center the smaller player */
+    border-radius: 12px;
+    overflow: hidden;
+    
+    /* This single line enforces the aspect ratio */
+    aspect-ratio: 16 / 9;
+
+    /* A background is good for when the video is loading */
+    background-color: #000;
+}
+
+/* --- Sidebar Styles --- */
+.watch-info-sidebar {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+}
+
+.sidebar-poster {
+    width: 100%; /* Keep 100% width for smaller screens or if the sidebar itself shrinks */
+    max-width: 230px; /* Adjust this value to make it about 2/3 of 350px (which is 233px) */
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: block; /* Important for margin-inline: auto to work */
+    margin-inline: auto; /* Centers the poster horizontally */
+}
+
+.sidebar-description {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 10px; /* Adjusted margin */
+    
+    /* Truncation styles */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* Show a maximum of 3 lines */
+}
+
+/* New: Class to show the full description */
+.sidebar-description.expanded {
+    -webkit-line-clamp: unset; /* Removes the line limit */
+}
+
+/* New: Styles for the "See More" button */
+.see-more-btn {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.sidebar-description::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-description::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-description::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 3px;
+}
+
+.sidebar-details span {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+.sidebar-details span strong {
+    color: #94a3b8;
+    margin-right: 8px;
+    font-weight: 500;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1200px) {
+    .watch-layout {
+        -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+    }
+    .watch-info-sidebar {
+        margin-top: 40px;
+    }
 }

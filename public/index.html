@@ -83,19 +83,39 @@
         </section>
 
         <section id="watch-page" class="page">
-            <div class="container player-container">
-                <div class="player-wrapper">
-                    <div id="player"></div>
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="/" onclick="event.preventDefault(); handleGoHome()">Home</a>
+                    <span class="breadcrumb-separator">&raquo;</span>
+                    <span class="breadcrumb-type">TV</span>
+                    <span class="breadcrumb-separator">&raquo;</span>
+                    <span class="breadcrumb-current"></span>
                 </div>
-
-                <div class="selectors-container">
-                    <div class="server-selector">
-                        <h3><i class="fas fa-server"></i> Servers</h3>
-                        <select id="server-select" class="selector-dropdown"></select>
+                <div class="watch-layout">
+                    <div class="watch-main-content">
+                        <div class="player-wrapper">
+                            <div id="player"></div>
+                        </div>
+                        <div class="selectors-container">
+                            <div class="server-selector">
+                                <h3><i class="fas fa-server"></i> Servers</h3>
+                                <select id="server-select" class="selector-dropdown"></select>
+                            </div>
+                            <div class="episode-selector-container">
+                                <h3><i class="fas fa-list-ol"></i> Episodes</h3>
+                                <select id="episode-select" class="selector-dropdown"></select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="episode-selector-container">
-                        <h3><i class="fas fa-list-ol"></i> Episodes</h3>
-                        <select id="episode-select" class="selector-dropdown"></select>
+
+                    <div class="watch-info-sidebar">
+                        <img src="" alt="Anime Poster" class="sidebar-poster">
+                        <div class="sidebar-meta">
+                            <p class="sidebar-description"></p>
+                            <button class="see-more-btn">See More</button>
+                            <div class="sidebar-details">
+                                </div>
+                        </div>
                     </div>
                 </div>
             </div>
