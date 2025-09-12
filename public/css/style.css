@@ -523,8 +523,13 @@ footer {
 
 .footer-col h3 {
     font-size: 18px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     color: white;
+}
+
+.footer-col p {
+    font-size: 15px;
+    font-style: italic;
 }
 
 .footer-col ul {
