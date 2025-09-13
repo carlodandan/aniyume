@@ -12,8 +12,10 @@
         "wrangler": "^4.34.0"
     },
     "dependencies": {
+        "@tailwindcss/cli": "^4.1.13",
         "artplayer": "^5.2.3",
         "artplayer-plugin-chapter": "^1.0.1",
-        "artplayer-plugin-hls-control": "^1.0.1"
+        "artplayer-plugin-hls-control": "^1.0.1",
+        "tailwindcss": "^4.1.13"
     }
 }
