@@ -74,6 +74,13 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
+    /* Enforce 2-column layout for Popular, New, and Favorites on mobile */
+    #popular-page .anime-grid,
+    #new-page .anime-grid,
+    #favorites-page .anime-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .anime-thumb-vertical {
         height: 250px;
     }

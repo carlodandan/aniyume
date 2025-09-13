@@ -201,6 +201,25 @@ export async function fetchMostPopularAnime() {
 }
 
 /**
+ * Fetch most favorite anime
+ * @param {number} page - Page number (optional, defaults to 1)
+ * @returns {Promise<Object>} Most favorite anime data
+ */
+export async function fetchMostFavoriteAnime(page = 1) {
+    try {
+        const response = await fetch(`${API_BASE}/most-favorite?page=${page}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching most favorite anime:', error);
+        throw error;
+    }
+}
+
+/**
  * Fetch anime by A-Z list
  * @param {string} letter - The letter or '0-9' or 'other'.
  * @param {number} page - Page number

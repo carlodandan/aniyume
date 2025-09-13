@@ -1,5 +1,5 @@
 // Import API functions
-import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes, fetchMostPopularAnime, fetchRecentAnime, fetchAnimeByGenre, fetchAnimeByAZ } from './api.js';
+import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes, fetchMostPopularAnime, fetchRecentAnime, fetchAnimeByGenre, fetchAnimeByAZ, fetchMostFavoriteAnime } from './api.js';
 // Import the player initializer and the new player manager
 import { initPlayer, playerManager } from './player.js';
 
@@ -56,6 +56,8 @@ function showPage(pageId) {
         loadMostPopularAnime();
     } else if (pageId === 'new') {
         loadNewAnime();
+    } else if (pageId === 'favorites') {
+        loadFavoritesPage();
     } else if (pageId === 'recently-updated') {
         loadRecentlyUpdatedAnime();
     } else if (pageId === 'browse-results') {
@@ -174,6 +176,28 @@ async function loadNewAnime() {
         grid.innerHTML = '<div class="error">Failed to load new anime. Please try again later.</div>';
     }
 }
+
+// Load favorites anime from API
+async function loadFavoritesPage() {
+    const grid = document.querySelector('#favorites-page .anime-grid');
+    if (!grid) return;
+
+    try {
+        grid.innerHTML = '<div class="loading">Loading your favorite anime...</div>';
+        const data = await fetchMostFavoriteAnime();
+        const animeList = data.results.data;
+
+        if (animeList && animeList.length > 0) {
+            grid.innerHTML = animeList.map(anime => createAnimeCard(anime)).join('');
+        } else {
+            grid.innerHTML = '<div class="no-data">No favorite anime found.</div>';
+        }
+    } catch (error) {
+        console.error('Error loading favorite anime:', error);
+        grid.innerHTML = '<div class="error">Failed to load favorite anime. Please try again later.</div>';
+    }
+}
+
 
 // --- Browse Page Logic ---
 
@@ -412,6 +436,8 @@ function handleRouting() {
         showPage('popular');
     } else if (path === '/new') {
         showPage('new');
+    } else if (path === '/favorites') {
+        showPage('favorites');
     } else if (path.startsWith('/watch') && urlParams.has('ep')) {
         showPage('watch');
     } else if (path.startsWith('/info') && urlParams.has('id')) {

@@ -375,6 +375,14 @@ section {
 
 #home-page .trending-grid .anime-thumb-vertical { height: 300px; }
 
+/* Make Popular, New, and Favorites pages use a 5-column layout on desktop */
+#popular-page .anime-grid,
+#new-page .anime-grid,
+#favorites-page .anime-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+}
+
 .anime-card {
     background: var(--card-bg);
     border-radius: 12px;
