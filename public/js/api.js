@@ -2,6 +2,7 @@
 
 export const PROXY_URL = 'https://theanimedbproxy.vercel.app/';
 export const API_BASE = 'https://theanimedb-api.vercel.app/api';
+export const COMMENTS_API = "https://aniyume.webbase.workers.dev/comments";
 
 // API Functions for fetching anime data
 
@@ -314,4 +315,32 @@ export async function fetchMovies(page = 1) {
         console.error('Error fetching movies:', error);
         throw error;
     }
+}
+
+// Fetch comments for an episode
+export async function fetchComments(episodeId) {
+  try {
+    const response = await fetch(`${COMMENTS_API}?episode_id=${encodeURIComponent(episodeId)}`);
+    if (!response.ok) throw new Error(`Failed to fetch comments: ${response.status}`);
+    return await response.json();
+  } catch (err) {
+    console.error("Error fetching comments:", err);
+    return [];
+  }
+}
+
+// Post a new comment
+export async function postComment({ username, comment, episodeId }) {
+  try {
+    const response = await fetch(COMMENTS_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, comment, episode_id: episodeId })
+    });
+    if (!response.ok) throw new Error(`Failed to post comment: ${response.status}`);
+    return await response.json();
+  } catch (err) {
+    console.error("Error posting comment:", err);
+    throw err;
+  }
 }

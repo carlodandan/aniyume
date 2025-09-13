@@ -1,4 +1,4 @@
-import { fetchEpisodes, fetchServersForEpisode, fetchStreamData, PROXY_URL, fetchAnimeDetails, fetchScheduleData } from './api.js';
+import { fetchComments, postComment, fetchEpisodes, fetchServersForEpisode, fetchStreamData, PROXY_URL, fetchAnimeDetails, fetchScheduleData } from './api.js';
 
 let player = null;
 let currentAnimeId = null;
@@ -262,6 +262,8 @@ export async function initPlayer() {
         renderEpisodeDropdown(episodeData.episodes || []);
         setupEventListeners();
         await loadPlayerForEpisode(currentEpisodeId);
+        await loadComments(currentEpisodeId);
+        setupCommentForm(currentEpisodeId);
     } catch (err) {
         console.error("Failed to set up player page:", err);
         const container = document.querySelector('.watch-layout');
@@ -367,4 +369,45 @@ function setupSidebarEvents() {
             }
         });
     }
+}
+
+async function loadComments(episodeId) {
+  const commentList = document.getElementById("comment-list");
+  if (!commentList) return;
+
+  commentList.innerHTML = "<p>Loading comments...</p>";
+
+  const comments = await fetchComments(episodeId);
+
+  if (!comments || comments.length === 0) {
+    commentList.innerHTML = "<p>No comments yet. Be the first!</p>";
+    return;
+  }
+
+  commentList.innerHTML = comments.map(c => `
+    <div class="comment">
+      <strong>${c.username}</strong>
+      <span class="timestamp">${new Date(c.timestamp).toLocaleString()}</span>
+      <p>${c.comment}</p>
+    </div>
+  `).join("");
+}
+
+function setupCommentForm(episodeId) {
+  const section = document.querySelector(".comment-section");
+  if (!section) return;
+
+  const textarea = section.querySelector(".comment-box");
+  const button = section.querySelector(".comment-btn");
+
+  button.addEventListener("click", async () => {
+    const comment = textarea.value.trim();
+    if (!comment) return;
+
+    const username = `anonymous-${Math.random().toString(36).substring(2, 6)}`;
+
+    await postComment({ username, comment, episodeId });
+    textarea.value = "";
+    loadComments(episodeId); // refresh comments
+  });
 }

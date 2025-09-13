@@ -15,3 +15,8 @@ ENVIRONMENT = "production"
 [observability]
 enabled = true
 head_sampling_rate = 1
+
+[[d1_databases]]
+binding = "DB"
+database_name = "aniyume"
+database_id = "b571cfb1-a2b9-44de-aa04-3611d67ee252"
