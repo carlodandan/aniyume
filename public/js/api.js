@@ -65,11 +65,12 @@ export async function fetchEpisodes(animeId) {
 /**
  * Fetch anime by genre
  * @param {string} genre - Genre name
+ * @param {number} page - Page number
  * @returns {Promise<Array>} Array of anime in the genre
  */
-export async function fetchAnimeByGenre(genre) {
+export async function fetchAnimeByGenre(genre, page = 1) {
     try {
-        const response = await fetch(`${API_BASE}/genre/${encodeURIComponent(genre)}`);
+        const response = await fetch(`${API_BASE}/genre/${genre}?page=${page}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -106,7 +107,7 @@ export async function fetchPopularAnime(page = 1) {
  */
 export async function fetchRecentAnime() {
     try {
-        const response = await fetch(`${API_BASE}/recent`);
+        const response = await fetch(`${API_BASE}/recently-added`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -195,6 +196,26 @@ export async function fetchMostPopularAnime() {
         return data;
     } catch (error) {
         console.error('Error fetching most popular anime:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch anime by A-Z list
+ * @param {string} letter - The letter or '0-9' or 'other'.
+ * @param {number} page - Page number
+ * @returns {Promise<Array>} Array of anime for that letter.
+ */
+export async function fetchAnimeByAZ(letter, page = 1) {
+    try {
+        const response = await fetch(`${API_BASE}/az-list/${letter}?page=${page}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`Error fetching anime by letter ${letter}:`, error);
         throw error;
     }
 }

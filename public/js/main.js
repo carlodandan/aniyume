@@ -1,5 +1,5 @@
 // Import API functions
-import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes, fetchMostPopularAnime } from './api.js';
+import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes, fetchMostPopularAnime, fetchRecentAnime, fetchAnimeByGenre, fetchAnimeByAZ } from './api.js';
 // Import the player initializer and the new player manager
 import { initPlayer, playerManager } from './player.js';
 
@@ -35,15 +35,18 @@ function showPage(pageId) {
     }
 
     // Update the browser URL and history
-    if (pageId !== 'watch') { // The watch URL is handled by navigateToPlayer
+    if (pageId !== 'watch' && pageId !== 'browse-results') { // The watch and browse-results URLs are handled by their own navigation functions
         const path = pageId === 'home' ? '/' : `/${pageId}`;
-        if (window.location.pathname !== path) {
+        // Avoid pushing state if it's the same as the current one
+        if (window.location.pathname !== path || window.location.search) {
              history.pushState({pageId: pageId}, null, path);
         }
     }
 
     // Run page-specific functions
-    if (pageId === 'watch') {
+    if (pageId === 'browse') {
+        initBrowsePage();
+    } else if (pageId === 'watch') {
         initPlayer();
     } else if (pageId === 'home') {
         loadTrendingAnime();
@@ -51,8 +54,13 @@ function showPage(pageId) {
         initInfoPage();
     } else if (pageId === 'popular') { // Add this case
         loadMostPopularAnime();
+    } else if (pageId === 'new') {
+        loadNewAnime();
     } else if (pageId === 'recently-updated') {
         loadRecentlyUpdatedAnime();
+    } else if (pageId === 'browse-results') {
+        // This needs to be called after the page is shown
+        loadBrowseResultsPage();
     }
 }
 
@@ -144,6 +152,119 @@ async function loadMostPopularAnime() {
         grid.innerHTML = '<div class="error">Failed to load most popular anime. Please try again later.</div>';
     }
 }
+
+// Load new anime from API
+async function loadNewAnime() {
+    const grid = document.querySelector('#new-page .anime-grid');
+    if (!grid) return;
+
+    try {
+        grid.innerHTML = '<div class="loading">Loading new anime...</div>';
+        // This uses the /recently-added endpoint
+        const data = await fetchRecentAnime();
+        const animeList = data.results.data;
+
+        if (animeList && animeList.length > 0) {
+            grid.innerHTML = animeList.map(anime => createAnimeCard(anime)).join('');
+        } else {
+            grid.innerHTML = '<div class="no-data">No new anime available</div>';
+        }
+    } catch (error) {
+        console.error('Error loading new anime:', error);
+        grid.innerHTML = '<div class="error">Failed to load new anime. Please try again later.</div>';
+    }
+}
+
+// --- Browse Page Logic ---
+
+const genres = [
+    'action', 'adventure', 'cars', 'comedy', 'dementia', 'demons', 'drama', 'ecchi', 'fantasy', 'game', 'harem',
+    'historical', 'horror', 'isekai', 'josei', 'kids', 'magic', 'martial-arts', 'mecha', 'military', 'music',
+    'mystery', 'parody', 'police', 'psychological', 'romance', 'samurai', 'school', 'sci-fi', 'seinen', 'shoujo',
+    'shoujo-ai', 'shounen', 'shounen-ai', 'slice-of-life', 'space', 'sports', 'super-power', 'supernatural',
+    'thriller', 'vampire'
+];
+
+const azList = [
+    'other', '0-9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+    'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+];
+
+function initBrowsePage() {
+    const genreContainer = document.getElementById('genre-list');
+    const azContainer = document.getElementById('az-list');
+
+    if (genreContainer.childElementCount === 0) {
+        genreContainer.innerHTML = genres.map(genre =>
+            `<a href="/browse/genre/${genre}" onclick="event.preventDefault(); navigateToBrowseResults('genre', '${genre}')">${genre.charAt(0).toUpperCase() + genre.slice(1)}</a>`
+        ).join('');
+    }
+
+    if (azContainer.childElementCount === 0) {
+        azContainer.innerHTML = azList.map(item => {
+            const value = item === '#' ? 'other' : item;
+            return `<a href="/browse/az/${value}" onclick="event.preventDefault(); navigateToBrowseResults('az', '${value}')">${item.toUpperCase()}</a>`
+        }).join('');
+    }
+}
+
+// Called only when user clicks a genre or A-Z link
+async function loadBrowseResultsPage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pathParts = window.location.pathname.split('/').filter(p => p);
+    const type = pathParts[1]; // genre or az
+    const value = pathParts[2]; // action, comedy, a, etc.
+    const page = parseInt(urlParams.get('page') || '1', 10);
+
+    const grid = document.getElementById('browse-results-grid');
+    const titleEl = document.getElementById('browse-results-title');
+
+    grid.innerHTML = '<div class="loading">Loading anime...</div>';
+    titleEl.textContent = `Results for: ${value || 'Unknown'} (Page ${page})`;
+
+    let data;
+    try {
+        if (type === 'genre') {
+            data = await fetchAnimeByGenre(value, page);
+        } else if (type === 'az') {
+            data = await fetchAnimeByAZ(value, page);
+        }
+        else throw new Error('Unknown type');
+
+        console.log('Fetched data:', data); // Check structure
+
+        const animeList = data?.results?.data; // adjust if API is different
+        if (Array.isArray(animeList) && animeList.length > 0) {
+            // Use a styled list of titles instead of anime cards
+            grid.classList.remove('anime-grid');
+            grid.innerHTML = '<ul class="browse-results-list">' + animeList.map(anime => {
+                const title = anime.title || anime.name || 'Unknown Title';
+                const id = anime.id || anime.data_id;
+                // The onclick navigates to the info page for that anime
+                return `<li><a href="/info?id=${id}" onclick="event.preventDefault(); showInfoPage('${id}')">${title}</a></li>`;
+            }).join('') + '</ul>';
+
+            // Add pagination button if there are more results (assuming API returns more than 15 if there's a next page)
+            // A more robust API would return a `hasNextPage` flag.
+            if (animeList.length > 15) {
+                grid.innerHTML += `<button class="cta-btn cta-primary" onclick="navigateToBrowseResults('${type}', '${value}', ${page + 1})">Next Page</button>`;
+            }
+        } else {
+            grid.innerHTML = `<div class="no-data">No anime found for "${value || 'Unknown'}".</div>`;
+        }
+    } catch (err) {
+        console.error(err);
+        grid.innerHTML = '<div class="error">Failed to load results</div>';
+    }
+}
+
+
+function navigateToBrowseResults(type, value, page = 1) {
+    const url = `/browse/${type}/${value}?page=${page}`;
+    history.pushState({ pageId: 'browse-results', type, value, page }, null, url);
+    showPage('browse-results');
+}
+
 
 // Create anime card HTML
 function createAnimeCard(anime) {
@@ -278,25 +399,51 @@ window.goBack = goBack;
 window.showInfoPage = showInfoPage;
 window.watchAnimeFromInfo = watchAnimeFromInfo;
 window.handleGoHome = handleGoHome;
+window.navigateToBrowseResults = navigateToBrowseResults;
 
-// Initialize the page and set up routing
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
+/**
+ * Centralized routing function to handle page navigation and reloads.
+ */
+function handleRouting() {
     const path = window.location.pathname;
+    const urlParams = new URLSearchParams(window.location.search);
 
     if (path === '/popular') {
         showPage('popular');
-    } else if (path === '/watch' && urlParams.has('ep')) {
+    } else if (path === '/new') {
+        showPage('new');
+    } else if (path.startsWith('/watch') && urlParams.has('ep')) {
         showPage('watch');
-    } else if (path === '/info' && urlParams.has('id')) {
+    } else if (path.startsWith('/info') && urlParams.has('id')) {
         const animeId = urlParams.get('id');
         showInfoPage(animeId);
     } else if (path === '/recently-updated') {
         showPage('recently-updated');
+    } else if (path === '/browse') {
+        showPage('browse');
+    } else if (path.startsWith('/browse/')) {
+        const pathParts = path.split('/').filter(p => p);
+        if (pathParts.length >= 3) {
+            // This is a valid browse results page, show it.
+            showPage('browse-results');
+        } else {
+            // If path is just /browse/ or incomplete, redirect to the main browse page.
+            history.replaceState({ pageId: 'browse' }, null, '/browse');
+            showPage('browse');
+        }
+    } else if (path === '/browse-results') {
+        // This path is invalid on its own, redirect to the main browse page.
+        history.replaceState({ pageId: 'browse' }, null, '/browse');
+        showPage('browse');
     } else {
         showPage('home');
     }
+}
 
+// Initialize the page and set up routing
+document.addEventListener('DOMContentLoaded', function() {
+    handleRouting();
+    
     // Set up search functionality
     const searchInput = document.querySelector('.search-input');
     searchInput.addEventListener('keyup', function(e) {
@@ -307,22 +454,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Handle browser back/forward navigation
-    window.addEventListener('popstate', function(event) {
-        const path = window.location.pathname;
-        const urlParams = new URLSearchParams(window.location.search);
-
-        if (path === '/popular') {
-            showPage('popular');
-        } else if (path.startsWith('/watch') && urlParams.has('ep')) {
-            showPage('watch');
-        } else if (path.startsWith('/info') && urlParams.has('id')) {
-            const animeId = urlParams.get('id');
-            showPage('info');
-            loadInfoPage(animeId);
-        } else if (path === '/recently-updated') {
-            showPage('recently-updated');
-        } else {
-            showPage('home');
-        }
-    });
+    window.addEventListener('popstate', handleRouting);
 });

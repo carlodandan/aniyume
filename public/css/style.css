@@ -762,6 +762,75 @@ footer {
     background: linear-gradient(to bottom, white, black);
 }
 
+/* --- Browse Page --- */
+.browse-section {
+    margin-bottom: 50px;
+}
+
+.browse-list {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    gap: 15px;
+}
+
+.browse-list a {
+    background: var(--card-bg);
+    color: #cbd5e1;
+    padding: 10px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.browse-list a:hover {
+    background: var(--primary);
+    color: white;
+    -webkit-transform: translateY(-2px);
+        -ms-transform: translateY(-2px);
+            transform: translateY(-2px);
+}
+
+/* --- Browse Results List --- */
+.browse-results-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.browse-results-list li {
+    margin-bottom: 10px;
+}
+
+.browse-results-list li a {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    padding: 15px 20px;
+    background: var(--card-bg);
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 8px;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.browse-results-list li a:hover {
+    background: var(--primary);
+    color: white;
+    -webkit-transform: translateX(5px);
+        -ms-transform: translateX(5px);
+            transform: translateX(5px);
+}
 
 /* --- Anime Card Vertical --- */
 .anime-card-vertical {

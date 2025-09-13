@@ -7,9 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer@3.6.10/dist/artplayer.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="icon" href="img/aniyume.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="icon" href="/img/aniyume.svg" type="image/svg+xml">
 </head>
 <body>
     <header>
@@ -126,10 +126,16 @@
         
         <section id="browse-page" class="page">
             <div class="container">
-                <h2 class="section-title"><i class="fas fa-compass"></i> Browse All Anime</h2>
-                <p class="hero-description">Explore our complete library of anime series and movies.</p>
-                <div class="anime-grid">
+                <div class="browse-section">
+                    <h2 class="section-title"><i class="fas fa-tags"></i> Browse by Genre</h2>
+                    <div class="browse-list" id="genre-list">
                     </div>
+                    </div>
+                <div class="browse-section">
+                    <h2 class="section-title"><i class="fas fa-sort-alpha-down"></i> Browse A-Z</h2>
+                    <div class="browse-list" id="az-list">
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -143,8 +149,8 @@
 
         <section id="new-page" class="page">
             <div class="container">
-                <h2 class="section-title"><i class="fas fa-rocket"></i> New Releases</h2>
-                <p class="hero-description">Discover the latest anime series and episodes.</p>
+                <h2 class="section-title"><i class="fas fa-rocket"></i> Newly Added</h2>
+                <p class="hero-description">Discover the latest anime series and episodes added to the list.</p>
                 <div class="anime-grid">
                     </div>
             </div>
@@ -156,6 +162,14 @@
                 <p class="hero-description">Your personal collection of beloved anime.</p>
                 <div class="anime-grid">
                     </div>
+            </div>
+        </section>
+
+        <section id="browse-results-page" class="page">
+            <div class="container">
+                <h2 class="section-title" id="browse-results-title"></h2>
+                <div id="browse-results-grid">
+                </div>
             </div>
         </section>
         
@@ -199,7 +213,7 @@
                         <li><a href="#" onclick="showPage('home')">Home</a></li>
                         <li><a href="/browse" onclick="event.preventDefault(); showPage('browse')">Browse</a></li>
                         <li><a href="/popular" onclick="event.preventDefault(); showPage('popular')">Popular</a></li>
-                        <li><a href="#" onclick="showPage('new')">New Releases</a></li>
+                        <li><a href="#" onclick="showPage('new')">Newly Added</a></li>
                     </ul>
                 </div>
                 
