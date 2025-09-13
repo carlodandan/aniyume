@@ -43,6 +43,15 @@
     .hero-description {
         font-size: 1rem;
     }
+
+    .hero-content-wrapper {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        text-align: center;
+        gap: 30px;
+    }
 }
 
 @media (max-width: 576px) {
@@ -59,6 +68,9 @@
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
+    }
+    .hero-gif {
+        display: none;
     }
 }
 
@@ -77,7 +89,8 @@
     /* Enforce 2-column layout for Popular, New, and Favorites on mobile */
     #popular-page .anime-grid,
     #new-page .anime-grid,
-    #favorites-page .anime-grid {
+    #favorites-page .anime-grid,
+    #search-results-page .anime-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 

@@ -220,6 +220,45 @@ export async function fetchMostFavoriteAnime(page = 1) {
 }
 
 /**
+ * Fetch search results for a given query.
+ * @param {string} query - The search term.
+ * @param {number} page - The page number.
+ * @returns {Promise<Object>} Search results data.
+ */
+export async function fetchSearchResults(query, page = 1) {
+    try {
+        const response = await fetch(`${API_BASE}/search?keyword=${encodeURIComponent(query)}&page=${page}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`Error fetching search results for "${query}":`, error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch search suggestions for a given query.
+ * @param {string} query - The search term.
+ * @returns {Promise<Object>} Search suggestions data.
+ */
+export async function fetchSearchSuggestions(query) {
+    try {
+        const response = await fetch(`${API_BASE}/search/suggest?keyword=${encodeURIComponent(query)}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`Error fetching search suggestions for "${query}":`, error);
+        throw error;
+    }
+}
+
+/**
  * Fetch anime by A-Z list
  * @param {string} letter - The letter or '0-9' or 'other'.
  * @param {number} page - Page number

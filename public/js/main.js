@@ -1,5 +1,5 @@
 // Import API functions
-import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes, fetchMostPopularAnime, fetchRecentAnime, fetchAnimeByGenre, fetchAnimeByAZ, fetchMostFavoriteAnime } from './api.js';
+import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes, fetchMostPopularAnime, fetchRecentAnime, fetchAnimeByGenre, fetchAnimeByAZ, fetchMostFavoriteAnime, fetchSearchResults, fetchSearchSuggestions } from './api.js';
 // Import the player initializer and the new player manager
 import { initPlayer, playerManager } from './player.js';
 
@@ -35,7 +35,7 @@ function showPage(pageId) {
     }
 
     // Update the browser URL and history
-    if (pageId !== 'watch' && pageId !== 'browse-results') { // The watch and browse-results URLs are handled by their own navigation functions
+    if (pageId !== 'watch' && pageId !== 'browse-results' && pageId !== 'search-results') { // URLs handled by their own navigation functions
         const path = pageId === 'home' ? '/' : `/${pageId}`;
         // Avoid pushing state if it's the same as the current one
         if (window.location.pathname !== path || window.location.search) {
@@ -63,6 +63,8 @@ function showPage(pageId) {
     } else if (pageId === 'browse-results') {
         // This needs to be called after the page is shown
         loadBrowseResultsPage();
+    } else if (pageId === 'search-results') {
+        loadSearchResultsPage();
     }
 }
 
@@ -289,6 +291,83 @@ function navigateToBrowseResults(type, value, page = 1) {
     showPage('browse-results');
 }
 
+function navigateToSearch(query) {
+    if (!query || query.trim() === '') return;
+    const trimmedQuery = query.trim();
+    const url = `/search?keyword=${encodeURIComponent(trimmedQuery)}`;
+    history.pushState({ pageId: 'search-results', query: trimmedQuery }, null, url);
+    showPage('search-results');
+}
+
+async function loadSearchResultsPage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('keyword');
+    const page = parseInt(urlParams.get('page') || '1', 10);
+
+    const grid = document.getElementById('search-results-grid');
+    const titleEl = document.getElementById('search-results-title');
+
+    if (!grid || !titleEl) return;
+
+    if (!query) {
+        titleEl.textContent = 'Please enter a search term.';
+        grid.innerHTML = '';
+        return;
+    }
+
+    grid.innerHTML = '<div class="loading">Searching...</div>';
+    titleEl.innerHTML = `<i class="fas fa-search"></i> Results for: "${query}"`;
+
+    try {
+        const data = await fetchSearchResults(query, page);
+        const animeList = data?.results?.data;
+
+        if (Array.isArray(animeList) && animeList.length > 0) {
+            grid.innerHTML = animeList.map(anime => createAnimeCard(anime)).join('');
+        } else {
+            grid.innerHTML = `<div class="no-data">No results found for "${query}".</div>`;
+        }
+    } catch (err) {
+        console.error(err);
+        grid.innerHTML = '<div class="error">Failed to load search results.</div>';
+    }
+}
+
+// --- Search Suggestions Logic ---
+
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+
+function renderSearchSuggestions(suggestions) {
+    const suggestionsContainer = document.querySelector('.search-suggestions');
+    if (!suggestionsContainer) return;
+
+    if (!suggestions || suggestions.length === 0) {
+        suggestionsContainer.style.display = 'none';
+        return;
+    }
+
+    const list = suggestions.map(anime => `
+        <li>
+            <a href="/info?id=${anime.id}" onclick="event.preventDefault(); handleSuggestionClick('${anime.id}')">
+                <img src="${anime.poster}" alt="${anime.title}" class="suggestion-poster">
+                <span class="suggestion-title">${anime.title}</span>
+            </a>
+        </li>
+    `).join('');
+
+    suggestionsContainer.innerHTML = `<ul>${list}</ul>`;
+    suggestionsContainer.style.display = 'block';
+}
+
+
+
 
 // Create anime card HTML
 function createAnimeCard(anime) {
@@ -412,6 +491,16 @@ function showInfoPage(animeId) {
     loadInfoPage(animeId);
 }
 
+function handleSuggestionClick(animeId) {
+    const suggestionsContainer = document.querySelector('.search-suggestions');
+    const searchInput = document.querySelector('.search-input');
+    
+    if (suggestionsContainer) suggestionsContainer.style.display = 'none';
+    if (searchInput) searchInput.value = '';
+
+    showInfoPage(animeId);
+}
+
 function initInfoPage() {
     // Currently handled by loadInfoPage in showInfoPage
 }
@@ -424,6 +513,8 @@ window.showInfoPage = showInfoPage;
 window.watchAnimeFromInfo = watchAnimeFromInfo;
 window.handleGoHome = handleGoHome;
 window.navigateToBrowseResults = navigateToBrowseResults;
+window.navigateToSearch = navigateToSearch;
+window.handleSuggestionClick = handleSuggestionClick;
 
 /**
  * Centralized routing function to handle page navigation and reloads.
@@ -438,6 +529,8 @@ function handleRouting() {
         showPage('new');
     } else if (path === '/favorites') {
         showPage('favorites');
+    } else if (path.startsWith('/search') && urlParams.has('keyword')) {
+        showPage('search-results');
     } else if (path.startsWith('/watch') && urlParams.has('ep')) {
         showPage('watch');
     } else if (path.startsWith('/info') && urlParams.has('id')) {
@@ -472,10 +565,37 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set up search functionality
     const searchInput = document.querySelector('.search-input');
-    searchInput.addEventListener('keyup', function(e) {
+    const suggestionsContainer = document.querySelector('.search-suggestions');
+
+    const handleSearchInput = debounce(async (event) => {
+        const query = event.target.value.trim();
+        if (query.length < 2) { // Don't search for less than 2 characters
+            suggestionsContainer.style.display = 'none';
+            return;
+        }
+
+        try {
+            const data = await fetchSearchSuggestions(query);
+            renderSearchSuggestions(data?.results?.data);
+        } catch (error) {
+            console.error('Failed to fetch search suggestions:', error);
+            suggestionsContainer.style.display = 'none';
+        }
+    }, 300);
+
+    searchInput.addEventListener('input', (event) => handleSearchInput(event));
+
+    searchInput.addEventListener('keyup', (e) => {
         if (e.key === 'Enter') {
-            alert(`Searching for: ${this.value}`);
-            this.value = '';
+            suggestionsContainer.style.display = 'none';
+            navigateToSearch(e.target.value);
+            e.target.value = '';
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+            suggestionsContainer.style.display = 'none';
         }
     });
 

@@ -32,6 +32,7 @@
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
                 <input type="text" class="search-input" placeholder="Search anime...">
+                <div class="search-suggestions"></div>
             </div>
             
             <div class="user-actions">
@@ -51,20 +52,25 @@
                 <div class="hero-collage-bg"></div>
                 <div class="hero-bg"></div>
                 <div class="container">
-                    <div class="hero-content">
-                        <h1 class="hero-title">
-                            Ani<span class="highlight">Yu</span>me
-                        </h1>
-                        <p class="hero-description">Watch thousands of anime series and movies with premium quality. No ads, no interruptions. The ultimate anime experience awaits you.</p>
-                        <div class="hero-cta">
-                            <a href="#" class="cta-btn cta-primary" onclick="event.preventDefault(); showPage('recently-updated')">
-                                <i class="fas fa-play"></i>
-                                Let's Watch Anime
-                            </a>
-                            <a href="#" class="cta-btn cta-secondary" onclick="showPage('browse')">
-                                <i class="fas fa-compass"></i>
-                                Explore Library
-                            </a>
+                    <div class="hero-content-wrapper">
+                        <div class="hero-text">
+                            <div class="hero-title-wrapper">
+                                <h1 class="hero-title">
+                                    Ani<span class="highlight">Yu</span>me
+                                </h1>
+                                <img src="/img/nezukoby@jesspixelsingiphy.gif" alt="Nezuko from Demon Slayer" class="hero-gif">
+                            </div>
+                            <p class="hero-description">Watch thousands of anime series and movies with premium quality. No ads, no interruptions. The ultimate anime experience awaits you.</p>
+                            <div class="hero-cta">
+                                <a href="#" class="cta-btn cta-primary" onclick="event.preventDefault(); showPage('recently-updated')">
+                                    <i class="fas fa-play"></i>
+                                    Let's Watch Anime
+                                </a>
+                                <a href="#" class="cta-btn cta-secondary" onclick="showPage('browse')">
+                                    <i class="fas fa-compass"></i>
+                                    Explore Library
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -173,6 +179,14 @@
             </div>
         </section>
         
+        <section id="search-results-page" class="page">
+            <div class="container">
+                <h2 class="section-title" id="search-results-title"></h2>
+                <div id="search-results-grid" class="anime-grid">
+                </div>
+            </div>
+        </section>
+
         <section id="info-page" class="page">
             <div class="container info-container">
                 <div class="info-page-actions">
