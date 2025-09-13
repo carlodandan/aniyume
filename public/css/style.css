@@ -321,6 +321,7 @@ section {
 
 .hero-text {
     max-width: 650px;
+    margin: 0 auto;
 }
 
 .hero-title-wrapper {
@@ -332,6 +333,7 @@ section {
             align-items: center;
     gap: 20px;
     margin-bottom: 20px;
+    justify-content: center;
 }
 
 .hero-gif {
@@ -707,92 +709,6 @@ footer {
     color: #94a3b8;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .anime-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-
-    .anime-details {
-        -ms-grid-columns: 1fr;
-        grid-template-columns: 1fr;
-    }
-
-    .footer-content {
-        -ms-grid-columns: (1fr)[2];
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .header-content {
-        position: relative;
-    }
-
-    nav {
-        position: absolute;
-        top: var(--header-height);
-        left: 0;
-        right: 0;
-        background: var(--dark);
-        padding: 20px;
-        display: none;
-        -webkit-box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    nav.active {
-        display: block;
-    }
-
-    nav ul {
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .search-container {
-        width: 200px;
-    }
-
-    .mobile-menu-btn {
-        display: block;
-    }
-
-    .hero-title {
-        font-size: 2.5rem;
-    }
-
-    .footer-content {
-        -ms-grid-columns: 1fr;
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 576px) {
-    .hero-title {
-        font-size: 2rem;
-    }
-
-    .hero-cta {
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-    }
-
-    .search-container {
-        display: none;
-    }
-
-    .user-actions .login-btn,
-    .user-actions .signup-btn {
-        display: none;
-    }
-}
-
 /* Utility classes */
 .hidden {
     display: none;
@@ -1138,6 +1054,10 @@ footer {
 
 .anime-poster-info img {
     border-radius: 8px; /* Apply border-radius to the image itself */
+    width: 100%;
+    height: 100%;
+    -o-object-fit: cover;
+       object-fit: cover;
 }
 
 /* ADD THESE STYLES FOR PLAYER LOADING/ERROR STATES */
@@ -1413,15 +1333,4 @@ footer {
     color: #94a3b8;
     margin-right: 8px;
     font-weight: 500;
-}
-
-/* --- Responsive Adjustments --- */
-@media (max-width: 1200px) {
-    .watch-layout {
-        -ms-grid-columns: 1fr;
-        grid-template-columns: 1fr;
-    }
-    .watch-info-sidebar {
-        margin-top: 40px;
-    }
 }

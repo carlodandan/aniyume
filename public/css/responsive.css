@@ -12,7 +12,7 @@
     }
 
     .container {
-        padding: 0;
+        padding: 0 15px;
     }
 
     .section-title {
@@ -101,6 +101,12 @@
 
 /* Watch Page */
 @media (max-width: 768px) {
+    .watch-layout {
+        grid-template-columns: 1fr;
+    }
+    .watch-info-sidebar {
+        margin-top: 20px;
+    }
     .watch-main-content .player-wrapper {
         width: 100%;
     }
@@ -212,5 +218,102 @@
     
     .watch-info-sidebar {
         padding: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        position: relative;
+    }
+
+    nav {
+        position: absolute;
+        top: var(--header-height);
+        left: 0;
+        right: 0;
+        background: var(--dark);
+        padding: 20px;
+        display: none;
+        -webkit-box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    nav.active {
+        display: block;
+    }
+
+    nav ul {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .search-container {
+        width: 200px;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .footer-content {
+        -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-cta {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+
+    .search-container {
+        display: none;
+    }
+
+    .user-actions .login-btn,
+    .user-actions .signup-btn {
+        display: none;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .anime-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .anime-details {
+        -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+    }
+
+    .footer-content {
+        -ms-grid-columns: (1fr)[2];
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1200px) {
+    .watch-layout {
+        -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+    }
+    .watch-info-sidebar {
+        margin-top: 40px;
     }
 }
