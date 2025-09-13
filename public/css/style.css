@@ -224,14 +224,38 @@ section {
     overflow: hidden;
 }
 
+.hero-collage-bg {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: (1fr)[4];
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    z-index: -3;
+    opacity: 15;
+    -webkit-filter: blur(5px);
+            filter: blur(5px);
+}
+
+.hero-collage-bg img {
+    width: 100%;
+    height: 100%;
+    -o-object-fit: cover;
+       object-fit: cover;
+}
+
 .hero-bg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: -o-linear-gradient(315deg, #0f172a 0%, #1e293b 100%);
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: -o-linear-gradient(315deg, #0f172a 25%, rgba(15, 23, 42, 0.7) 100%);
+    background: linear-gradient(0deg, #0f172a 10%, rgba(15, 23, 42, 0.5) 100%);
     z-index: -2;
 }
 
@@ -342,6 +366,14 @@ section {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 25px;
 }
+
+/* Make trending cards smaller and in a 5-column layout */
+#home-page .trending-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+}
+
+#home-page .trending-grid .anime-thumb-vertical { height: 300px; }
 
 .anime-card {
     background: var(--card-bg);
@@ -745,6 +777,7 @@ footer {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
+    padding: 10px 10px 0;
     -webkit-transition: -webkit-transform 0.3s, -webkit-box-shadow 0.3s;
     transition: -webkit-transform 0.3s, -webkit-box-shadow 0.3s;
     -o-transition: transform 0.3s, box-shadow 0.3s;
@@ -766,6 +799,7 @@ footer {
     -o-object-fit: cover;
     object-fit: cover;
     display: block;
+    border-radius: 8px;
 }
 
 .trending-rank {
@@ -784,6 +818,7 @@ footer {
 
 .anime-card-vertical .anime-info {
     padding: 15px;
+    padding-top: 10px;
 }
 
 .anime-card-vertical .anime-title {

@@ -70,11 +70,16 @@ async function loadTrendingAnime() {
     try {
         trendingGrid.innerHTML = '<div class="loading">Loading trending anime...</div>';
         const homeData = await fetchHomeData();
+
+        // Populate hero collage
+        if (homeData?.results?.spotlights) {
+            loadHeroCollage(homeData.results.spotlights);
+        }
+
         let trendingAnime = [];
         if (homeData && homeData.results && Array.isArray(homeData.results.trending)) {
             trendingAnime = homeData.results.trending;
         }
-
         if (trendingAnime.length > 0) {
             trendingGrid.innerHTML = trendingAnime.map(anime => createAnimeCard(anime)).join('');
         } else {
@@ -85,6 +90,16 @@ async function loadTrendingAnime() {
         console.error('Error loading trending anime:', error);
         trendingGrid.innerHTML = '<div class="error">Failed to load trending anime. Please try again later.</div>';
     }
+}
+
+// Create hero collage background
+function loadHeroCollage(spotlights) {
+    const collageContainer = document.querySelector('.hero-collage-bg');
+    if (!collageContainer || !spotlights || spotlights.length === 0) return;
+
+    // Use up to 8 images for the collage for a good visual density
+    const images = spotlights.slice(0, 8).map(anime => `<img src="${anime.poster}" alt="">`).join('');
+    collageContainer.innerHTML = images;
 }
 
 // Load recently updated anime from API
@@ -134,7 +149,6 @@ async function loadMostPopularAnime() {
 function createAnimeCard(anime) {
     const title = anime.title || anime.name || 'Unknown Title';
     const image = anime.poster || anime.image || 'https://via.placeholder.com/300x400?text=No+Image';
-    const type = anime.type || (anime.tvInfo && anime.tvInfo.showType) || 'TV';
     const rank = anime.number || null;
     const id = anime.id || anime.data_id || Math.random();
 
@@ -145,9 +159,6 @@ function createAnimeCard(anime) {
                 onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'">
             <div class="anime-info">
                 <h3 class="anime-title">${title}</h3>
-                <div class="anime-meta">
-                    <span>${type}</span>
-                </div>
             </div>
         </div>
     `;
