@@ -371,16 +371,17 @@ function renderSearchSuggestions(suggestions) {
 
 // Create anime card HTML
 function createAnimeCard(anime) {
-    const title = anime.title || anime.name || 'Unknown Title';
-    const image = anime.poster || anime.image || 'https://via.placeholder.com/300x400?text=No+Image';
+    const title = anime.title || anime.name || 'Unknown Title';    
+    const image = anime.poster || anime.image;
     const rank = anime.number || null;
     const id = anime.id || anime.data_id || Math.random();
 
     return `
         <div class="anime-card-vertical" onclick="showInfoPage('${id}')">
             ${rank ? `<div class="trending-rank"># ${rank}</div>` : ""}
-            <img src="${image}" alt="${title} poster" class="anime-thumb-vertical"
-                onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'">
+            <div class="anime-thumb-vertical skeleton">
+                ${image ? `<img src="${image}" alt="${title} poster" loading="lazy" onerror="this.style.display='none'">` : ''}
+            </div>
             <div class="anime-info">
                 <h3 class="anime-title">${title}</h3>
             </div>
@@ -436,12 +437,14 @@ async function loadInfoPage(animeId) {
     const description = document.querySelector('.detail-description-info');
     const tags = document.querySelector('.detail-tags-info');
 
-    poster.src = '';
+    poster.innerHTML = ''; // Clear previous image
     poster.alt = '';
     title.textContent = 'Loading...';
     meta.innerHTML = '';
     description.textContent = '';
     tags.innerHTML = '';
+
+    poster.classList.add('skeleton');
 
     try {
         const apiResponse = await fetchAnimeDetails(animeId);
@@ -450,12 +453,9 @@ async function loadInfoPage(animeId) {
         if (!details) {
             title.textContent = 'Anime Not Found';
             description.textContent = 'The details for this anime could not be loaded.';
-            poster.src = 'https://via.placeholder.com/300x400?text=Not+Found';
             return;
         }
 
-        poster.src = details.poster || 'https://via.placeholder.com/300x400?text=No+Image';
-        poster.alt = `${details.title} poster`;
         title.textContent = details.title || 'Unknown Title';
 
         const airedYear = details.animeInfo?.Aired?.match(/\d{4}/)?.[0] || 'N/A';
@@ -471,11 +471,21 @@ async function loadInfoPage(animeId) {
 
         description.textContent = details.animeInfo?.Overview || 'No description available.';
         tags.innerHTML = details.animeInfo?.Genres?.map(genre => `<span class="tag">${genre}</span>`).join('') || '';
+
+        // Correctly handle poster image loading
+        if (details.poster) {
+            const img = document.createElement('img');
+            img.src = details.poster;
+            img.alt = `${details.title} poster`;
+            img.className = 'poster-img'; // Add a class for specific styling
+            img.onload = () => poster.classList.remove('skeleton'); // Remove skeleton on successful load
+            img.onerror = () => this.style.display = 'none'; // Hide broken image, keep skeleton
+            poster.appendChild(img);
+        }
     } catch (error) {
         console.error('Error loading anime info:', error);
         title.textContent = 'Error loading anime info';
         description.textContent = 'Please try again later.';
-        poster.src = 'https://via.placeholder.com/300x400?text=Error';
     }
 }
 

@@ -264,8 +264,12 @@ function populateSidebar(details) {
     // Return early if the necessary elements aren't found
     if (!poster || !description || !detailsContainer) return;
 
-    poster.src = details.poster || 'https://via.placeholder.com/350x500?text=No+Image';
-    poster.alt = `${details.title || 'Anime'} Poster`; // Keep alt text for accessibility
+    poster.classList.add('skeleton');
+    poster.innerHTML = ''; // Clear previous image
+    if (details.poster) {
+        poster.innerHTML = `<img src="${details.poster}" alt="${details.title || 'Anime'} Poster" loading="lazy" onerror="this.style.display='none'">`;
+    }
+
     description.innerHTML = details.animeInfo?.Overview || 'No description available.';
     
     detailsContainer.innerHTML = `
