@@ -320,9 +320,11 @@ export async function fetchMovies(page = 1) {
 // Fetch comments for an episode
 export async function fetchComments(episodeId) {
   try {
-    const response = await fetch(`${COMMENTS_API}?episode_id=${encodeURIComponent(episodeId)}`);
+    const response = await fetch(`${COMMENTS_API}?episode_id=${episodeId}`);
     if (!response.ok) throw new Error(`Failed to fetch comments: ${response.status}`);
-    return await response.json();
+    const data = await response.json();
+    // Return the comments array directly, or an empty array if it doesn't exist
+    return data.comments || []; 
   } catch (err) {
     console.error("Error fetching comments:", err);
     return [];

@@ -377,13 +377,19 @@ async function loadComments(episodeId) {
 
   commentList.innerHTML = "<p>Loading comments...</p>";
 
-  const comments = await fetchComments(episodeId);
+  // 1. Fetch the entire response object from the API.
+  const responseData = await fetchComments(episodeId);
 
+  // 2. Extract the actual comments array from the "comments" property.
+  const comments = responseData.comments;
+
+  // 3. Now, check if the extracted array is empty.
   if (!comments || comments.length === 0) {
     commentList.innerHTML = "<p>No comments yet. Be the first!</p>";
     return;
   }
 
+  // 4. Map over the correct array to display the comments.
   commentList.innerHTML = comments.map(c => `
     <div class="comment">
       <strong>${c.username}</strong>
