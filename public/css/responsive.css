@@ -436,9 +436,6 @@
   .search-container {
     display: none;
   }
-  .user-actions .login-btn, .user-actions .signup-btn {
-    display: none;
-  }
 }
 @media (max-width: 1024px) {
   .anime-grid {
