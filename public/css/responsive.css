@@ -68,6 +68,12 @@
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 15px;
     }
+
+    /* Specific override for Trending Now on mobile to enforce a 2-column layout */
+    #home-page .trending-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .anime-thumb-vertical {
         height: 250px;
     }
