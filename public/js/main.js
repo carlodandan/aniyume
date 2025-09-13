@@ -39,7 +39,7 @@ function showPage(pageId) {
         const path = pageId === 'home' ? '/' : `/${pageId}`;
         // Avoid pushing state if it's the same as the current one
         if (window.location.pathname !== path || window.location.search) {
-             history.pushState({pageId: pageId}, null, path);
+            history.pushState({ pageId: pageId }, null, path);
         }
     }
 
@@ -142,8 +142,8 @@ async function loadMostPopularAnime() {
 
     try {
         grid.innerHTML = '<div class="loading">Loading most popular anime...</div>';
-        const data = await fetchMostPopularAnime();
         // Corrected line to access the nested data array
+        const data = await fetchMostPopularAnime();
         const animeList = data.results.data;
 
         if (animeList && animeList.length > 0) {
@@ -254,8 +254,7 @@ async function loadBrowseResultsPage() {
             data = await fetchAnimeByGenre(value, page);
         } else if (type === 'az') {
             data = await fetchAnimeByAZ(value, page);
-        }
-        else throw new Error('Unknown type');
+        } else throw new Error('Unknown type');
 
         console.log('Fetched data:', data); // Check structure
 
@@ -371,21 +370,27 @@ function renderSearchSuggestions(suggestions) {
 
 // Create anime card HTML
 function createAnimeCard(anime) {
-    const title = anime.title || anime.name || 'Unknown Title';    
+    const title = anime.title || anime.name || 'Unknown Title';
     const image = anime.poster || anime.image;
     const rank = anime.number || null;
     const id = anime.id || anime.data_id || Math.random();
-
+    const rating = anime.score || anime.rating || null;
     return `
-        <div class="anime-card-vertical" onclick="showInfoPage('${id}')">
-            ${rank ? `<div class="trending-rank"># ${rank}</div>` : ""}
-            <div class="anime-thumb-vertical skeleton">
-                ${image ? `<img src="${image}" alt="${title} poster" loading="lazy" onerror="this.style.display='none'">` : ''}
+        <a href="/info?id=${id}" onclick="event.preventDefault(); showInfoPage('${id}')" class="anime-card-vertical">
+            <div class="anime-card-img-wrapper skeleton">
+                ${image ? `<img src="${image}" alt="${title}" loading="lazy" class="anime-card-img" onload="this.parentNode.classList.remove('skeleton')" onerror="this.src='/img/placeholder.jpg'">` : ''}
+                <div class="anime-card-overlay">
+                    <div class="anime-info-onhover">
+                        <h3 class="anime-title">${title}</h3>
+                        ${rating ? `<div class="anime-meta"><span class="anime-rating"><i class="fas fa-star"></i> ${rating}</span></div>` : ''}
+                    </div>
+                </div>
             </div>
             <div class="anime-info">
                 <h3 class="anime-title">${title}</h3>
             </div>
-        </div>
+            ${rank ? `<div class="trending-rank">#${rank}</div>` : ''}
+        </a>
     `;
 }
 
@@ -508,7 +513,7 @@ function showInfoPage(animeId) {
 function handleSuggestionClick(animeId) {
     const suggestionsContainer = document.querySelector('.search-suggestions');
     const searchInput = document.querySelector('.search-input');
-    
+
     if (suggestionsContainer) suggestionsContainer.style.display = 'none';
     if (searchInput) searchInput.value = '';
 
@@ -576,7 +581,7 @@ function handleRouting() {
 // Initialize the page and set up routing
 document.addEventListener('DOMContentLoaded', function() {
     handleRouting();
-    
+
     // Set up search functionality
     const searchInput = document.querySelector('.search-input');
     const suggestionsContainer = document.querySelector('.search-suggestions');

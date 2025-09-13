@@ -150,7 +150,7 @@ nav ul li a.active {
     z-index: 101;
     /* Above header content */
     -webkit-backdrop-filter: blur(5px);
-            backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 }
 
 .search-suggestions ul {
@@ -164,8 +164,8 @@ nav ul li a.active {
     display: -ms-flexbox;
     display: flex;
     -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
     padding: 10px 15px;
     color: #cbd5e1;
     text-decoration: none;
@@ -194,7 +194,7 @@ nav ul li a.active {
     width: 40px;
     height: 60px;
     -o-object-fit: cover;
-       object-fit: cover;
+    object-fit: cover;
     border-radius: 4px;
 }
 
@@ -292,14 +292,14 @@ section {
     z-index: -3;
     opacity: 15;
     -webkit-filter: blur(5px);
-            filter: blur(5px);
+    filter: blur(5px);
 }
 
 .hero-collage-bg img {
     width: 100%;
     height: 100%;
     -o-object-fit: cover;
-       object-fit: cover;
+    object-fit: cover;
 }
 
 .hero-bg {
@@ -329,16 +329,18 @@ section {
     display: -ms-flexbox;
     display: flex;
     -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
     gap: 20px;
     margin-bottom: 20px;
     justify-content: center;
 }
 
 .hero-gif {
-    height: 4.2rem; /* Matches the approximate line-height of the title */
-    width: auto; /* Maintain aspect ratio */
+    height: 4.2rem;
+    /* Matches the approximate line-height of the title */
+    width: auto;
+    /* Maintain aspect ratio */
     border-radius: 12px;
 }
 
@@ -346,7 +348,8 @@ section {
     font-size: 3.5rem;
     font-weight: 800;
     line-height: 1.2;
-    color: #e2e8f0; /* Set the base color to light gray/white */
+    color: #e2e8f0;
+    /* Set the base color to light gray/white */
 }
 
 .hero-title .highlight {
@@ -445,7 +448,9 @@ section {
     gap: 20px;
 }
 
-#home-page .trending-grid .anime-thumb-vertical { height: 300px; }
+#home-page .trending-grid .anime-thumb-vertical {
+    height: 300px;
+}
 
 /* Make Popular, New, and Favorites pages use a 5-column layout on desktop */
 #popular-page .anime-grid,
@@ -456,60 +461,156 @@ section {
     gap: 20px;
 }
 
-.anime-card {
-    background: var(--card-bg);
+/* --- Reworked Anime Card Styles --- */
+.anime-card-vertical {
+    position: relative;
+    background-color: transparent;
     border-radius: 12px;
     overflow: hidden;
+    cursor: pointer;
     -webkit-transition: -webkit-transform 0.3s, -webkit-box-shadow 0.3s;
     transition: -webkit-transform 0.3s, -webkit-box-shadow 0.3s;
     -o-transition: transform 0.3s, box-shadow 0.3s;
     transition: transform 0.3s, box-shadow 0.3s;
     transition: transform 0.3s, box-shadow 0.3s, -webkit-transform 0.3s, -webkit-box-shadow 0.3s;
-    cursor: pointer;
 }
 
-.anime-card:hover {
-    -webkit-transform: translateY(-5px);
-    -ms-transform: translateY(-5px);
-    transform: translateY(-5px);
-    -webkit-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+.anime-card-vertical:hover {
+    -webkit-transform: translateY(-8px);
+    -ms-transform: translateY(-8px);
+    transform: translateY(-8px);
+    -webkit-box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
-.anime-thumb {
+.anime-card-img-wrapper {
+    position: relative;
     width: 100%;
-    height: 300px;
+    /* Keep a consistent aspect ratio */
+    padding-top: 150%;
+    /* 2:3 aspect ratio (150% of width) */
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.anime-card-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     -o-object-fit: cover;
     object-fit: cover;
+    -webkit-transition: -webkit-transform 0.3s;
+    transition: -webkit-transform 0.3s;
+    -o-transition: transform 0.3s;
+    transition: transform 0.3s;
+    transition: transform 0.3s, -webkit-transform 0.3s;
 }
 
-.anime-info {
+.anime-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: -o-linear-gradient(bottom, rgba(0, 0, 0, 0.8) 0%, transparent 50%);
+    background: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.8)), color-stop(50%, transparent));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 50%);
+    opacity: 0;
+    -webkit-transition: opacity 0.3s;
+    -o-transition: opacity 0.3s;
+    transition: opacity 0.3s;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
     padding: 15px;
+    color: white;
+}
+
+.anime-card-vertical:hover .anime-card-overlay {
+    opacity: 1;
+}
+
+.trending-rank {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--primary);
+    color: white;
+    padding: 10px 5px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-orientation: mixed;
+    border-radius: 6px;
+    z-index: 1;
+}
+
+.anime-card-vertical .anime-info {
+    padding: 15px 0 0;
+    text-align: center;
 }
 
 .anime-title {
+    color: #e2e8f0;
+}
+
+.anime-card-vertical .anime-title {
     font-size: 16px;
     font-weight: 600;
-    margin-bottom: 8px;
     white-space: nowrap;
     overflow: hidden;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
+    margin-bottom: 5px;
 }
 
-.anime-meta {
+.anime-card-vertical .anime-meta {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
-    justify-content: space-between;
+    justify-content: center;
     color: #94a3b8;
     font-size: 14px;
 }
 
-.anime-rating {
-    color: #fbbf24;
+/* New: Styles for Anime Info on hover */
+.anime-info-onhover {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+}
+
+.anime-info-onhover .anime-title {
+    margin-bottom: 5px;
+}
+
+.anime-info-onhover .anime-meta {
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    gap: 15px;
+    opacity: 0;
+    -webkit-transition: opacity 0.3s;
+    -o-transition: opacity 0.3s;
+    transition: opacity 0.3s;
+}
+
+.anime-card-vertical:hover .anime-info-onhover .anime-meta {
+    opacity: 1;
 }
 
 /* Player Page */
@@ -728,6 +829,7 @@ footer {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -737,6 +839,7 @@ footer {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -767,7 +870,7 @@ footer {
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
+    flex-wrap: wrap;
     gap: 15px;
 }
 
@@ -787,8 +890,8 @@ footer {
     background: var(--primary);
     color: white;
     -webkit-transform: translateY(-2px);
-        -ms-transform: translateY(-2px);
-            transform: translateY(-2px);
+    -ms-transform: translateY(-2px);
+    transform: translateY(-2px);
 }
 
 /* --- Browse Results List --- */
@@ -807,8 +910,8 @@ footer {
     display: -ms-flexbox;
     display: flex;
     -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
     padding: 15px 20px;
     background: var(--card-bg);
     color: #cbd5e1;
@@ -823,8 +926,8 @@ footer {
     background: var(--primary);
     color: white;
     -webkit-transform: translateX(5px);
-        -ms-transform: translateX(5px);
-            transform: translateX(5px);
+    -ms-transform: translateX(5px);
+    transform: translateX(5px);
 }
 
 /* --- Anime Card Vertical --- */
@@ -1043,9 +1146,11 @@ footer {
 
 /* --- Consistent Poster Image Size on Info Page --- */
 .anime-poster-info {
-    width: 100%; /* This will fill the 300px grid column */
+    width: 100%;
+    /* This will fill the 300px grid column */
     height: 450px;
-    padding: 10px; /* Add padding to match other cards */
+    padding: 10px;
+    /* Add padding to match other cards */
     background: var(--card-bg);
     border-radius: 12px;
     -webkit-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -1053,11 +1158,12 @@ footer {
 }
 
 .anime-poster-info img {
-    border-radius: 8px; /* Apply border-radius to the image itself */
+    border-radius: 8px;
+    /* Apply border-radius to the image itself */
     width: 100%;
     height: 100%;
     -o-object-fit: cover;
-       object-fit: cover;
+    object-fit: cover;
 }
 
 /* ADD THESE STYLES FOR PLAYER LOADING/ERROR STATES */
@@ -1090,6 +1196,7 @@ footer {
         -webkit-transform: rotate(0deg);
         transform: rotate(0deg);
     }
+
     100% {
         -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
@@ -1098,11 +1205,12 @@ footer {
 
 /* --- Skeleton Loader for Images --- */
 .skeleton {
-    background: #1f2937; /* var(--secondary) */
+    background: #1f2937;
+    /* var(--secondary) */
     background: linear-gradient(110deg, rgba(31, 41, 55, 0) 8%, rgba(55, 65, 81, .2) 18%, rgba(31, 41, 55, 0) 33%);
     background-size: 200% 100%;
     -webkit-animation: 1.5s shine linear infinite;
-            animation: 1.5s shine linear infinite;
+    animation: 1.5s shine linear infinite;
     position: relative;
     overflow: hidden;
 }
@@ -1114,18 +1222,27 @@ footer {
     width: 100%;
     height: 100%;
     -o-object-fit: cover;
-       object-fit: cover;
+    object-fit: cover;
 }
 
-@-webkit-keyframes shine { to { background-position-x: -200%; } }
-@keyframes shine { to { background-position-x: -200%; } }
+@-webkit-keyframes shine {
+    to {
+        background-position-x: -200%;
+    }
+}
 
+@keyframes shine {
+    to {
+        background-position-x: -200%;
+    }
+}
 
 @keyframes spin {
     0% {
         -webkit-transform: rotate(0deg);
         transform: rotate(0deg);
     }
+
     100% {
         -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
@@ -1273,7 +1390,8 @@ footer {
     display: block;
     /* Important for margin-inline: auto to work */
     margin-inline: auto;
-    height: 330px; /* Add a fixed height for the skeleton loader */
+    height: 330px;
+    /* Add a fixed height for the skeleton loader */
     /* Centers the poster horizontally */
 }
 

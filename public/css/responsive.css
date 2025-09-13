@@ -47,8 +47,8 @@
     .hero-content-wrapper {
         -webkit-box-orient: vertical;
         -webkit-box-direction: normal;
-            -ms-flex-direction: column;
-                flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
         text-align: center;
         gap: 30px;
     }
@@ -60,6 +60,7 @@
         height: auto;
         padding: 40px 0;
     }
+
     .hero-cta {
         -webkit-box-orient: vertical;
         -webkit-box-direction: normal;
@@ -69,6 +70,7 @@
         -ms-flex-align: center;
         align-items: center;
     }
+
     .hero-gif {
         display: none;
     }
@@ -94,8 +96,40 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .anime-thumb-vertical {
-        height: 250px;
+    .anime-card-img-wrapper {
+        padding-top: 150%;
+        /* Maintain 2:3 ratio */
+        height: auto;
+    }
+
+    .anime-card-img {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+    }
+
+    .anime-card-vertical .anime-info {
+        padding: 10px 0 0;
+    }
+
+    .anime-card-vertical .anime-title {
+        font-size: 14px;
+    }
+
+    .anime-card-vertical .anime-meta {
+        font-size: 12px;
+    }
+
+    .trending-rank {
+        font-size: 0.8rem;
+        padding: 8px 4px;
+    }
+}
+
+@media (max-width: 576px) {
+    .anime-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 10px;
     }
 }
 
@@ -104,18 +138,22 @@
     .watch-layout {
         grid-template-columns: 1fr;
     }
+
     .watch-info-sidebar {
         margin-top: 20px;
     }
+
     .watch-main-content .player-wrapper {
         width: 100%;
     }
+
     .selectors-container {
         margin-left: 0;
         -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
     }
-     .breadcrumb {
+
+    .breadcrumb {
         padding: 20px 0 0 20px;
     }
 }
@@ -146,7 +184,8 @@
 
 /* Add a subtle background and more padding to the entire watch page section */
 #watch-page {
-    background: rgba(15, 23, 42, 0.7); /* A slightly different background to distinguish it */
+    background: rgba(15, 23, 42, 0.7);
+    /* A slightly different background to distinguish it */
     padding-top: 20px;
     padding-bottom: 40px;
 }
@@ -158,16 +197,17 @@
     display: flex;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-    gap: 20px; /* Adds space between the player and the selectors */
+    -ms-flex-direction: column;
+    flex-direction: column;
+    gap: 20px;
+    /* Adds space between the player and the selectors */
 }
 
 
 /* Make the player's shadow more pronounced */
 .player-wrapper {
     -webkit-box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -176,16 +216,21 @@
     background: var(--card-bg);
     padding: 20px;
     border-radius: 12px;
-    margin: 0 auto; /* Center the selectors */
-    width: 90%; /* Match the player wrapper width */
+    margin: 0 auto;
+    /* Center the selectors */
+    width: 90%;
+    /* Match the player wrapper width */
     gap: 20px;
 }
 
 .server-selector h3,
 .episode-selector-container h3 {
-    margin-bottom: 10px; /* Reduced margin for a tighter look */
-    font-size: 1.2rem; /* Slightly smaller heading */
-    border-bottom: 2px solid var(--primary); /* Adds a nice underline */
+    margin-bottom: 10px;
+    /* Reduced margin for a tighter look */
+    font-size: 1.2rem;
+    /* Slightly smaller heading */
+    border-bottom: 2px solid var(--primary);
+    /* Adds a nice underline */
     padding-bottom: 8px;
     color: white;
 }
@@ -208,27 +253,32 @@
         margin-left: 0;
         padding: 15px;
         -ms-grid-columns: 1fr;
-        grid-template-columns: 1fr; /* Stack selectors on smaller screens */
+        grid-template-columns: 1fr;
+        /* Stack selectors on smaller screens */
         gap: 20px;
     }
 
     .watch-main-content .player-wrapper {
-        width: 100%;       /* full width */
-        max-width: 100%;   /* prevent overflow */
-        height: auto;      /* no fixed height */
+        width: 100%;
+        /* full width */
+        max-width: 100%;
+        /* prevent overflow */
+        height: auto;
+        /* no fixed height */
     }
 
     /* Make iframe or video inside responsive */
     .watch-main-content .player-wrapper iframe,
     .watch-main-content .player-wrapper video {
         width: 100%;
-        height: auto;
-        aspect-ratio: 16 / 9; /* keeps proper ratio */
+        aspect-ratio: 16 / 9;
+        /* keeps proper ratio */
     }
 
     .watch-info-sidebar {
         padding: 15px;
-        width: 100%;       /* sidebar stacks under video */
+        width: 100%;
+        /* sidebar stacks under video */
     }
 }
 
@@ -325,6 +375,7 @@
         -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
     }
+
     .watch-info-sidebar {
         margin-top: 40px;
     }
@@ -335,6 +386,7 @@
     #watch-page {
         padding-top: 10px;
         padding-bottom: 20px;
-        background: rgba(15, 23, 42, 0.9); /* slightly darker for mobile */
+        background: rgba(15, 23, 42, 0.9);
+        /* slightly darker for mobile */
     }
 }

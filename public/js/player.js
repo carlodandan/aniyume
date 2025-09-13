@@ -144,16 +144,27 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
         const subtitles = streamData.streamingLink.tracks || [];
         const headers = { Referer: new URL(sourceUrl).origin + "/" };
         const finalProxyUrl = `${PROXY_URL}m3u8-proxy?url=${encodeURIComponent(sourceUrl)}&headers=${encodeURIComponent(JSON.stringify(headers))}`;
-
+        playerContainer.innerHTML = "";
         const newPlayer = new Artplayer({
             url: finalProxyUrl,
             container: playerContainer,
             type: 'm3u8',
             autoplay: true,
             playsInline: true,
-            pip: true, setting: true, fullscreen: true, playbackRate: true, fastForward: true, mutex: true,
+            pip: true,
+            setting: true,
+            fullscreen: true,
+            autoOrientation: true,
+            hideCursor: false,
+            playbackRate: true,
+            fastForward: true,
+            hotkey: true,
+            mutex: true,
             theme: '#8b5cf6',
-            moreVideoAttr: { crossOrigin: 'anonymous', preload: 'none', playsInline: true },
+            moreVideoAttr: { 
+                crossOrigin: 'anonymous',
+                preload: 'none',
+                playsInline: true },
             controls: [
                 {
                     position: 'right',
