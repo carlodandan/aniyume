@@ -22,7 +22,7 @@
             <nav id="nav">
                 <ul>
                     <li><a href="/" class="active" onclick="event.preventDefault(); handleGoHome()">Home</a></li>
-                    <li><a href="/browse" onclick="event.preventDefault(); showPage('browse')">Browse</a></li>
+                    <li><a href="/movie" onclick="event.preventDefault(); showPage('movie')">Movie</a></li>
                     <li><a href="/popular" onclick="event.preventDefault(); showPage('popular')">Popular</a></li>
                     <li><a href="/new" onclick="event.preventDefault(); showPage('new')">New</a></li>
                     <li><a href="/favorites" onclick="event.preventDefault(); showPage('favorites')">Favorites</a></li>
@@ -111,6 +111,10 @@
                             </div>
                             <div id="next-episode-container" class="next-episode-container"></div>
                         </div>
+                        <div class="comment-section">
+                            <textarea class="comment-box" placeholder="Add a comment..."></textarea>
+                            <button class="comment-btn">Comment</button>
+                        </div>
                     </div>
 
                     <div class="watch-info-sidebar">
@@ -164,6 +168,14 @@
                 <p class="hero-description">Collection of beloved anime by the community.</p>
                 <div class="anime-grid">
                     </div>
+            </div>
+        </section>
+
+        <section id="movie-page" class="page">
+            <div class="container">
+                <h2 class="section-title"><i class="fas fa-film"></i> Movies</h2>
+                <div class="movie-grid anime-grid">
+                </div>
             </div>
         </section>
 
@@ -221,7 +233,7 @@
                     <h3>Navigation</h3>
                     <ul>
                         <li><a href="#" onclick="showPage('home')">Home</a></li>
-                        <li><a href="/browse" onclick="event.preventDefault(); showPage('browse')">Browse</a></li>
+                        <li><a href="/movie" onclick="event.preventDefault(); showPage('movie')">Movie</a></li>
                         <li><a href="/popular" onclick="event.preventDefault(); showPage('popular')">Popular</a></li>
                         <li><a href="#" onclick="showPage('new')">Newly Added</a></li>
                     </ul>

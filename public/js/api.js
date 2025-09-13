@@ -296,3 +296,22 @@ export async function fetchScheduleData(animeId) {
         throw error;
     }
 }
+
+/**
+ * Fetch anime movies
+ * @param {number} page - Page number
+ * @returns {Promise<Array>} Array of anime movies
+ */
+export async function fetchMovies(page = 1) {
+    try {
+        const response = await fetch(`${API_BASE}/movie?page=${page}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching movies:', error);
+        throw error;
+    }
+}

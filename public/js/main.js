@@ -1,5 +1,5 @@
 // Import API functions
-import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes, fetchMostPopularAnime, fetchRecentAnime, fetchAnimeByGenre, fetchAnimeByAZ, fetchMostFavoriteAnime, fetchSearchResults, fetchSearchSuggestions } from './api.js';
+import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes, fetchMostPopularAnime, fetchRecentAnime, fetchAnimeByGenre, fetchAnimeByAZ, fetchMostFavoriteAnime, fetchSearchResults, fetchSearchSuggestions, fetchMovies } from './api.js';
 // Import the player initializer and the new player manager
 import { initPlayer, playerManager } from './player.js';
 
@@ -65,6 +65,8 @@ function showPage(pageId) {
         loadBrowseResultsPage();
     } else if (pageId === 'search-results') {
         loadSearchResultsPage();
+    } else if (pageId === 'movie') {
+        loadMoviePage();
     }
 }
 
@@ -197,6 +199,27 @@ async function loadFavoritesPage() {
     } catch (error) {
         console.error('Error loading favorite anime:', error);
         grid.innerHTML = '<div class="error">Failed to load favorite anime. Please try again later.</div>';
+    }
+}
+
+// Load movies from API
+async function loadMoviePage() {
+    const grid = document.querySelector('#movie-page .anime-grid');
+    if (!grid) return;
+
+    try {
+        grid.innerHTML = '<div class="loading">Loading movies...</div>';
+        const data = await fetchMovies();
+        const animeList = data.results.data;
+
+        if (animeList && animeList.length > 0) {
+            grid.innerHTML = animeList.map(anime => createAnimeCard(anime)).join('');
+        } else {
+            grid.innerHTML = '<div class="no-data">No movies available</div>';
+        }
+    } catch (error) {
+        console.error('Error loading movies:', error);
+        grid.innerHTML = '<div class="error">Failed to load movies. Please try again later.</div>';
     }
 }
 
@@ -548,6 +571,8 @@ function handleRouting() {
         showPage('new');
     } else if (path === '/favorites') {
         showPage('favorites');
+    } else if (path === '/movie') {
+        showPage('movie');
     } else if (path.startsWith('/search') && urlParams.has('keyword')) {
         showPage('search-results');
     } else if (path.startsWith('/anime/info') && urlParams.has('id')) {

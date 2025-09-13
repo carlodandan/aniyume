@@ -288,6 +288,7 @@
   }
   .watch-info-sidebar {
     margin-top: 20px;
+    display: none;
   }
   .watch-main-content .player-wrapper {
     width: 100%;
@@ -464,5 +465,19 @@
     padding-top: 10px;
     padding-bottom: 20px;
     background: rgba(15, 23, 42, 0.9);
+  }
+}
+
+@media (max-width: 768px) {
+  .info-page-actions {
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+  }
+  .anime-poster-info {
+    margin: 0 auto 20px;
+    max-width: 100%;
+    height: auto;
+    padding: 0;
   }
 }

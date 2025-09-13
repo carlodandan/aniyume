@@ -616,7 +616,12 @@ section {
   z-index: 1;
 }
 .anime-card-vertical .anime-info {
-  padding: 15px 0 0;
+  padding: 10px 15px 15px;
+  -webkit-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  max-height: 100px;
+  overflow: hidden;
   text-align: center;
 }
 .anime-title {
@@ -963,6 +968,14 @@ footer {
   -webkit-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
+
+.anime-card-vertical:hover .anime-info {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+}
+
 .anime-thumb-vertical {
   width: 100%;
   height: 400px;
@@ -1035,7 +1048,12 @@ footer {
   -ms-flex-align: center;
   align-items: center;
   gap: 8px;
+  width: 150px;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
 }
+
 .watch-btn {
   background: var(--primary);
   border: 1px solid var(--primary);
@@ -1054,6 +1072,10 @@ footer {
   -ms-flex-align: center;
   align-items: center;
   gap: 8px;
+  width: 150px;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
 }
 .watch-btn:hover {
   background: var(--primary-dark);
@@ -1362,4 +1384,45 @@ footer {
   to {
     transform: rotate(360deg);
   }
+}
+
+.comment-section {
+  margin-top: 20px;
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  margin-left: 70px;
+  margin-right: 70px;
+}
+
+.comment-box {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  background: var(--secondary);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 80px;
+  margin-bottom: 10px;
+}
+
+.comment-btn {
+  background: var(--primary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+  border: none;
+  display: block;
+  margin-left: auto;
+}
+
+.comment-btn:hover {
+  background: var(--primary-dark);
 }
