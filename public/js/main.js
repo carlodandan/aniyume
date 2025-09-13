@@ -35,7 +35,7 @@ function showPage(pageId) {
     }
 
     // Update the browser URL and history
-    if (pageId !== 'watch' && pageId !== 'browse-results' && pageId !== 'search-results') { // URLs handled by their own navigation functions
+    if (pageId !== 'watch' && pageId !== 'browse-results' && pageId !== 'search-results' && pageId !== 'info') { // URLs handled by their own navigation functions
         const path = pageId === 'home' ? '/' : `/${pageId}`;
         // Avoid pushing state if it's the same as the current one
         if (window.location.pathname !== path || window.location.search) {
@@ -486,7 +486,11 @@ function goBack() {
 function showInfoPage(animeId) {
     if (!animeId) return;
     currentInfoPageAnimeId = animeId;
-    history.pushState(null, '', `/info?id=${animeId}`);
+    const newPath = `/anime/info?id=${animeId}`;
+    // Avoid pushing state if we are already on the correct URL (e.g., on page reload)
+    if (window.location.pathname + window.location.search !== newPath) {
+        history.pushState({ pageId: 'info', animeId: animeId }, '', newPath);
+    }
     showPage('info');
     loadInfoPage(animeId);
 }
@@ -531,11 +535,11 @@ function handleRouting() {
         showPage('favorites');
     } else if (path.startsWith('/search') && urlParams.has('keyword')) {
         showPage('search-results');
-    } else if (path.startsWith('/watch') && urlParams.has('ep')) {
-        showPage('watch');
-    } else if (path.startsWith('/info') && urlParams.has('id')) {
+    } else if (path.startsWith('/anime/info') && urlParams.has('id')) {
         const animeId = urlParams.get('id');
         showInfoPage(animeId);
+    } else if (path.startsWith('/watch') && urlParams.has('ep')) {
+        showPage('watch');
     } else if (path === '/recently-updated') {
         showPage('recently-updated');
     } else if (path === '/browse') {

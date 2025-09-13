@@ -1113,6 +1113,16 @@ footer {
     font-weight: 500;
 }
 
+.detail-tags-info {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    gap: 10px;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-left: 3px;
+}
+
 /* --- Consistent Poster Image Size on Info Page --- */
 .anime-poster-info {
     width: 100%;
