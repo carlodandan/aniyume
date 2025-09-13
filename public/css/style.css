@@ -364,6 +364,7 @@ section {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+    justify-content: center;
     gap: 15px;
 }
 
