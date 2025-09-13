@@ -442,7 +442,6 @@ section {
 
 /* Make trending cards smaller and in a 5-column layout */
 #home-page .trending-grid {
-    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
 }
 

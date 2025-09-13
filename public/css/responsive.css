@@ -75,7 +75,7 @@
 }
 
 /* Anime Card */
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     .anime-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 15px;
