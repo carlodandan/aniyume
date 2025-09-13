@@ -1426,3 +1426,35 @@ footer {
 .comment-btn:hover {
   background: var(--primary-dark);
 }
+
+.comment {
+  margin-bottom: 20px; /* Adds space below each comment block */
+  padding-bottom: 15px; /* Adds space before the separator line */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Visual separator */
+}
+
+.comment:last-child {
+  border-bottom: none; /* Removes the separator from the last comment */
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.comment strong {
+  font-size: 1.1em; /* Makes the username slightly larger */
+  font-weight: 600;
+  color: #e2e8f0; /* Brighter color for username */
+  display: block; /* Ensures the margin is applied correctly */
+  margin-bottom: 4px;  /* Margin between username and timestamp */
+}
+
+.comment .timestamp {
+  font-size: 0.8em; /* Makes the timestamp smaller */
+  color: #94a3b8;   /* A softer color for the timestamp */
+  display: block;
+  margin-bottom: 10px; /* Margin between timestamp and the comment text */
+}
+
+.comment p {
+  margin: 0 0 7px 0;
+  line-height: 1.6; /* Improves readability */
+}

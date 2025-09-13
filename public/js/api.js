@@ -320,14 +320,15 @@ export async function fetchMovies(page = 1) {
 // Fetch comments for an episode
 export async function fetchComments(episodeId) {
   try {
-    const response = await fetch(`${COMMENTS_API}?episode_id=${episodeId}`);
+    // The episodeId is now properly encoded to handle special characters
+    const response = await fetch(`${COMMENTS_API}?episode_id=${encodeURIComponent(episodeId)}`);
     if (!response.ok) throw new Error(`Failed to fetch comments: ${response.status}`);
     const data = await response.json();
-    // Return the comments array directly, or an empty array if it doesn't exist
-    return data.comments || []; 
+    return data; // Return the full object as the player.js logic now expects it
   } catch (err) {
     console.error("Error fetching comments:", err);
-    return [];
+    // Return a default structure on error to prevent crashes
+    return { success: false, comments: [] };
   }
 }
 

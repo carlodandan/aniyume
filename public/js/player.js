@@ -22,7 +22,8 @@ export const playerManager = {
  * Changes the currently playing episode.
  * @param {string} newEpisodeId - The full ID of the new episode to play.
  */
-function changeEpisode(newEpisodeId) {
+// Make this an async function to use await
+async function changeEpisode(newEpisodeId) {
     if (currentEpisodeId === newEpisodeId) return;
 
     currentEpisodeId = newEpisodeId;
@@ -31,7 +32,10 @@ function changeEpisode(newEpisodeId) {
     history.pushState({ episodeId: newEpisodeId }, '', url.toString());
 
     playerManager.destroy();
-    loadPlayerForEpisode(newEpisodeId);
+
+    await loadPlayerForEpisode(newEpisodeId);
+    await loadComments(newEpisodeId);
+    // The call to setupCommentForm is now removed from here
 }
 
 /**
@@ -263,7 +267,7 @@ export async function initPlayer() {
         setupEventListeners();
         await loadPlayerForEpisode(currentEpisodeId);
         await loadComments(currentEpisodeId);
-        setupCommentForm(currentEpisodeId);
+        setupCommentForm();
     } catch (err) {
         console.error("Failed to set up player page:", err);
         const container = document.querySelector('.watch-layout');
@@ -399,21 +403,23 @@ async function loadComments(episodeId) {
   `).join("");
 }
 
-function setupCommentForm(episodeId) {
+function setupCommentForm() {
   const section = document.querySelector(".comment-section");
   if (!section) return;
 
   const textarea = section.querySelector(".comment-box");
   const button = section.querySelector(".comment-btn");
 
+  // A single event listener that reads the current episode ID on click
   button.addEventListener("click", async () => {
     const comment = textarea.value.trim();
     if (!comment) return;
 
     const username = `anonymous-${Math.random().toString(36).substring(2, 6)}`;
 
-    await postComment({ username, comment, episodeId });
+    // Use the module-level 'currentEpisodeId' which is always up-to-date
+    await postComment({ username, comment, episodeId: currentEpisodeId });
     textarea.value = "";
-    loadComments(episodeId); // refresh comments
+    loadComments(currentEpisodeId); // refresh comments with the correct ID
   });
 }
