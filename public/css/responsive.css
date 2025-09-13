@@ -213,13 +213,25 @@
     }
 
     .watch-main-content .player-wrapper {
-        width: 100%; /* Make the player full-width on mobile */
+        width: 100%;       /* full width */
+        max-width: 100%;   /* prevent overflow */
+        height: auto;      /* no fixed height */
     }
-    
+
+    /* Make iframe or video inside responsive */
+    .watch-main-content .player-wrapper iframe,
+    .watch-main-content .player-wrapper video {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9; /* keeps proper ratio */
+    }
+
     .watch-info-sidebar {
         padding: 15px;
+        width: 100%;       /* sidebar stacks under video */
     }
 }
+
 
 @media (max-width: 768px) {
     .header-content {
@@ -308,12 +320,21 @@
 }
 
 /* --- Responsive Adjustments --- */
-@media (max-width: 1200px) {
+@media (max-width: 768px) {
     .watch-layout {
         -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
     }
     .watch-info-sidebar {
         margin-top: 40px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    #watch-page {
+        padding-top: 10px;
+        padding-bottom: 20px;
+        background: rgba(15, 23, 42, 0.9); /* slightly darker for mobile */
     }
 }
