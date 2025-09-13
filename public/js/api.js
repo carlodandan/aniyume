@@ -277,3 +277,22 @@ export async function fetchAnimeByAZ(letter, page = 1) {
         throw error;
     }
 }
+
+/**
+ * Fetch the next episode schedule for a given anime.
+ * @param {string} animeId - The ID of the anime.
+ * @returns {Promise<Object>} Schedule data.
+ */
+export async function fetchScheduleData(animeId) {
+    try {
+        const response = await fetch(`${API_BASE}/schedule/${animeId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.results;
+    } catch (error) {
+        console.error(`Error fetching schedule data for "${animeId}":`, error);
+        throw error;
+    }
+}

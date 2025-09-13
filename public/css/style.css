@@ -1221,10 +1221,8 @@ footer {
   font-size: 1.1rem;
 }
 .selectors-container {
-  display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 250px 30px 250px;
-  grid-template-columns: 250px 250px;
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
   margin-top: 10px;
   margin-left: 70px;
