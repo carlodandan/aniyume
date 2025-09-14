@@ -481,3 +481,14 @@
     padding: 0;
   }
 }
+
+@media (max-width: 768px) {
+  .container .navigation {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
+    grid-template-rows: repeat(3, auto);   /* 3 rows */
+    gap: 5px;
+    align-items: center;
+    margin: auto;
+  }
+}
