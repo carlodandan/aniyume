@@ -27,9 +27,5 @@ local.sh
 remote.sh
 secrets.txt
 
-# vercel
-.vercel
-
 # Make it available for updating...
 package-lock.json
-.vercel

@@ -1,5 +1,2 @@
 # Cloudflare
 src/_workers.js
-
-# Vercel
-src/vercel.js
