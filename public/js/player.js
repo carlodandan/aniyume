@@ -154,6 +154,7 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
             url: finalProxyUrl,
             container: playerContainer,
             type: 'm3u8',
+            volume: 1,
             autoplay: true,
             playsInline: true,
             pip: true,
