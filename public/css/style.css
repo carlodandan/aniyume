@@ -788,6 +788,8 @@ footer {
   font-size: 15px;
   font-style: italic;
   text-align: center;
+  margin-top: 10px;
+  color: #94a3b8;
 }
 .footer-col ul {
   list-style: none;
@@ -1457,6 +1459,30 @@ footer {
   border-bottom: none; /* Removes the separator from the last comment */
   margin-bottom: 0;
   padding-bottom: 0;
+}
+
+.about-content {
+  background: var(--card-bg);
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 900px;
+  margin: 20px auto;
+  text-align: left;
+}
+
+.about-content h3 {
+  font-size: 1.8rem;
+  color: var(--primary);
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.about-content p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #cbd5e1;
+  margin-bottom: 25px;
+  text-align: center;
 }
 
 .comment strong {

@@ -67,6 +67,8 @@ function showPage(pageId) {
         loadSearchResultsPage();
     } else if (pageId === 'movie') {
         loadMoviePage();
+    } else if (pageId === 'about') {
+        // No specific data loading needed for static about page
     }
 }
 
@@ -573,6 +575,8 @@ function handleRouting() {
         showPage('favorites');
     } else if (path === '/movie') {
         showPage('movie');
+    } else if (path === '/about') {
+        showPage('about');
     } else if (path.startsWith('/search') && urlParams.has('keyword')) {
         showPage('search-results');
     } else if (path.startsWith('/anime/info') && urlParams.has('id')) {
