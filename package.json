@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "scripts": {
         "dev": "wrangler dev",
-        "deploy": "wrangler deploy",
+        "deploy": "wrangler deploy"
     },
     "devDependencies": {
         "wrangler": "^4.34.0"
