@@ -1,7 +1,7 @@
 // Mainly for API request and Proxy-ing
 
-export const PROXY_URL = 'https://theanimedbproxy.vercel.app/';
-export const API_BASE = 'https://theanimedb-api.vercel.app/api';
+export const PROXY_URL = 'https://aniyume-proxy.vercel.app/';
+export const API_BASE = 'https://aniyume-api.vercel.app/api';
 export const COMMENTS_API = "https://aniyume.webbase.workers.dev/comments";
 
 // API Functions for fetching anime data

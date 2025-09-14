@@ -2,7 +2,7 @@
 
 const fetch = require('node-fetch');
 
-const TADB_API_BASE = 'https://theanimedb-api.vercel.app';
+const TADB_API_BASE = 'https://aniyume-api.vercel.app';
 
 const fetchTarget = (urlString) => {
     const url = new URL(urlString);
