@@ -193,6 +193,8 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   font-family: 'Inter', sans-serif;
+  justify-content: center;
+  
 }
 :root {
   --primary: #8b5cf6;
@@ -421,6 +423,7 @@ section {
 .hero-text {
   max-width: 650px;
   margin: 0 auto;
+  text-align: center;
 }
 .hero-title-wrapper {
   display: -webkit-box;
@@ -452,6 +455,7 @@ section {
   line-height: 1.6;
   color: #94a3b8;
   margin-bottom: 30px;
+  text-align: center;;
 }
 .hero-cta {
   display: -webkit-box;
@@ -769,20 +773,21 @@ footer {
   margin-top: 50px;
 }
 .footer-content {
-  display: -ms-grid;
-  display: grid;
-  -ms-grid-columns: 1fr 30px 1fr 30px 1fr 30px 1fr;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
   gap: 30px;
+  text-align: center;
 }
 .footer-col h3 {
-  font-size: 18px;
+  font-size: 25px;
   margin-bottom: 5px;
+  margin-top: 20px;
   color: white;
+  text-align: center;
 }
 .footer-col p {
   font-size: 15px;
   font-style: italic;
+  text-align: center;
 }
 .footer-col ul {
   list-style: none;
@@ -800,6 +805,20 @@ footer {
 .footer-col ul li a:hover {
   color: var(--primary);
 }
+.navigation {
+  display: flex;
+  gap: 30px;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.navigation a {
+  padding: 5px 12px;
+  background: rgba(111, 96, 179, 0.5);
+  border-radius: 20px;
+  font-size: 14px;
+}
+
 .social-icons {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1029,6 +1048,7 @@ footer {
   display: flex;
   gap: 15px;
   margin-bottom: 30px;
+  justify-content: left;
 }
 .back-btn {
   background: transparent;

@@ -54,7 +54,7 @@
                                 </h1>
                                 <img src="/img/nezukoby@jesspixelsingiphy.gif" alt="Nezuko from Demon Slayer" class="hero-gif">
                             </div>
-                            <p class="hero-description">Watch thousands of anime series and movies with premium quality. No ads, no interruptions. The ultimate anime experience awaits you.</p>
+                            <p class="hero-description">Watch thousands of anime series and movies with premium quality. The ultimate anime experience awaits you. Stream your favorite shows anytime, anywhere.</p>
                             <div class="hero-cta">
                                 <a href="#" class="cta-btn cta-primary" onclick="event.preventDefault(); showPage('recently-updated')">
                                     <i class="fas fa-play"></i>
@@ -150,6 +150,7 @@
         <section id="popular-page" class="page">
             <div class="container">
                 <h2 class="section-title"><i class="fas fa-star"></i> Most Popular</h2>
+                <p class="hero-description">Discover the most popular anime series/movies.</p>
                 <div class="popular-grid anime-grid">
                 </div>
             </div>
@@ -158,7 +159,7 @@
         <section id="new-page" class="page">
             <div class="container">
                 <h2 class="section-title"><i class="fas fa-rocket"></i> Newly Added</h2>
-                <p class="hero-description">Discover the latest anime series and episodes added to the list.</p>
+                <p class="hero-description">Discover the latest anime series/movies added to the list.</p>
                 <div class="anime-grid">
                     </div>
             </div>
@@ -176,6 +177,7 @@
         <section id="movie-page" class="page">
             <div class="container">
                 <h2 class="section-title"><i class="fas fa-film"></i> Movies</h2>
+                <p class="hero-description">Collection of anime movies.</p>
                 <div class="movie-grid anime-grid">
                 </div>
             </div>
@@ -219,49 +221,17 @@
 
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-col">
-                    <h3>AniYume</h3>
-                    <p>The ultimate destination for anime lovers. Stream your favorite shows anytime, anywhere.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-discord"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-col">
-                    <h3>Navigation</h3>
-                    <ul>
-                        <li><a href="#" onclick="showPage('home')">Home</a></li>
-                        <li><a href="/movie" onclick="event.preventDefault(); showPage('movie')">Movie</a></li>
-                        <li><a href="/popular" onclick="event.preventDefault(); showPage('popular')">Popular</a></li>
-                        <li><a href="#" onclick="showPage('new')">Newly Added</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h3>Support</h3>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Device Support</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h3>Legal</h3>
-                    <ul>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Cookie Policy</a></li>
-                        <li><a href="#">Copyright</a></li>
-                    </ul>
-                </div>
+            <div class="navigation">
+                    <a href="/" onclick="event.preventDefault(); handleGoHome()">Home</a>
+                    <a href="/movie" onclick="event.preventDefault(); showPage('movie')">Movie</a>
+                    <a href="/popular" onclick="event.preventDefault(); showPage('popular')">Popular</a>
+                    <a href="/new" onclick="event.preventDefault(); showPage('new')">New</a>
+                    <a href="/favorites" onclick="event.preventDefault(); showPage('new')">Favorites</a>
             </div>
-            
+            <div class="footer-col">
+                    <h3>Disclaimer</h3>
+                    <p>AniYume does not host any files on its server. All contents are provided by non-affiliated third parties. Users should direct all legal inquiries to the respective file hosts and providers.</p>
+            </div>
             <div class="copyright">
                 <p>© 2023 AniYume. All rights reserved.</p>
             </div>
