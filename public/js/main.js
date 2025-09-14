@@ -617,10 +617,10 @@ document.addEventListener('DOMContentLoaded', function() {
             suggestionsContainer.style.display = 'none';
             return;
         }
-
+    
         try {
             const data = await fetchSearchSuggestions(query);
-            renderSearchSuggestions(data?.results?.data);
+            renderSearchSuggestions(data?.results);
         } catch (error) {
             console.error('Failed to fetch search suggestions:', error);
             suggestionsContainer.style.display = 'none';
