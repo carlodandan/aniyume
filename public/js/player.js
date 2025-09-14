@@ -3,6 +3,7 @@ import { fetchComments, postComment, fetchEpisodes, fetchServersForEpisode, fetc
 let player = null;
 let currentAnimeId = null;
 let currentEpisodeId = null;
+let currentEpisodeList = [];
 
 /**
  * Manages the Artplayer instance.
@@ -223,6 +224,70 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
     }
 }
 
+// Add this entire new function to player.js
+function setupCustomControls() {
+    const player = playerManager.get();
+    if (!player) return;
+
+    // Get all the new elements
+    const autoPlayToggle = document.getElementById('autoplay-toggle');
+    const autoNextToggle = document.getElementById('autonext-toggle');
+    const autoSkipToggle = document.getElementById('autoskip-toggle');
+    const prevEpBtn = document.getElementById('prev-ep-btn');
+    const nextEpBtn = document.getElementById('next-ep-btn');
+
+    // Helper to update UI
+    const updateToggleUI = (toggleEl, statusTextEl, isActive) => {
+        statusTextEl.textContent = isActive ? 'On' : 'Off';
+        toggleEl.classList.toggle('active', isActive);
+    };
+
+    // Helper for navigation
+    const navigateToAdjacentEpisode = (direction) => {
+        const currentIndex = currentEpisodeList.findIndex(ep => ep.id === currentEpisodeId);
+        const newIndex = currentIndex + direction;
+        if (newIndex >= 0 && newIndex < currentEpisodeList.length) {
+            changeEpisode(currentEpisodeList[newIndex].id);
+        }
+    };
+
+    // Object to manage settings state
+    const settings = {
+        autoPlay: localStorage.getItem('aniyume-autoplay') === 'true',
+        autoNext: localStorage.getItem('aniyume-autonext') === 'true',
+        autoSkipIntro: localStorage.getItem('aniyume-autoskipintro') === 'true',
+    };
+
+    // Initialize UI state from localStorage
+    updateToggleUI(autoPlayToggle, autoPlayToggle.querySelector('.toggle-status'), settings.autoPlay);
+    updateToggleUI(autoNextToggle, autoNextToggle.querySelector('.toggle-status'), settings.autoNext);
+    updateToggleUI(autoSkipToggle, autoSkipToggle.querySelector('.toggle-status'), settings.autoSkipIntro);
+
+    // Add Event Listeners
+    autoPlayToggle.addEventListener('click', () => {
+        settings.autoPlay = !settings.autoPlay;
+        localStorage.setItem('aniyume-autoplay', settings.autoPlay);
+        playerManager.get().autoplay = settings.autoPlay;
+        updateToggleUI(autoPlayToggle, autoPlayToggle.querySelector('.toggle-status'), settings.autoPlay);
+    });
+
+    autoNextToggle.addEventListener('click', () => {
+        settings.autoNext = !settings.autoNext;
+        localStorage.setItem('aniyume-autonext', settings.autoNext);
+        updateToggleUI(autoNextToggle, autoNextToggle.querySelector('.toggle-status'), settings.autoNext);
+    });
+
+    autoSkipToggle.addEventListener('click', () => {
+        settings.autoSkipIntro = !settings.autoSkipIntro;
+        localStorage.setItem('aniyume-autoskipintro', settings.autoSkipIntro);
+        updateToggleUI(autoSkipToggle, autoSkipToggle.querySelector('.toggle-status'), settings.autoSkipIntro);
+    });
+
+    prevEpBtn.addEventListener('click', () => navigateToAdjacentEpisode(-1));
+    nextEpBtn.addEventListener('click', () => navigateToAdjacentEpisode(1));
+}
+
+
 /**
  * Initializes the watch page.
  */
@@ -250,6 +315,8 @@ export async function initPlayer() {
             fetchScheduleData(currentAnimeId)
         ]);
         
+        currentEpisodeList = episodeData.episodes || [];
+        
         // Populate the sidebar and breadcrumbs with the fetched details
         if (animeDetailsResponse?.results?.data) {
             const details = animeDetailsResponse.results.data;
@@ -266,6 +333,7 @@ export async function initPlayer() {
         renderEpisodeDropdown(episodeData.episodes || []);
         setupEventListeners();
         await loadPlayerForEpisode(currentEpisodeId);
+        setupCustomControls();
         await loadComments(currentEpisodeId);
         setupCommentForm();
     } catch (err) {

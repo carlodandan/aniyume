@@ -1458,3 +1458,59 @@ footer {
   margin: 0 0 7px 0;
   line-height: 1.6; /* Improves readability */
 }
+
+/* --- Custom Player Controls Below Player --- */
+#custom-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card-bg);
+  padding: 10px 20px;
+  border-radius: 12px;
+  margin: 15px auto 0; /* Margin top, centered, margin bottom */
+  width: 90%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.control-toggle {
+  font-size: 14px;
+  color: #cbd5e1;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.control-toggle:hover {
+  color: white;
+}
+
+.control-toggle .toggle-status {
+  margin-left: 8px;
+  font-weight: 700;
+  color: #f87171; /* Red for 'Off' */
+}
+
+.control-toggle.active .toggle-status {
+  color: #4ade80; /* Green for 'On' */
+}
+
+.control-button {
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.control-button:hover {
+  color: var(--primary);
+  transform: scale(1.1);
+}

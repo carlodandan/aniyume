@@ -620,7 +620,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const data = await fetchSearchSuggestions(query);
-            renderSearchSuggestions(data?.results?.data);
+            // CORRECTED LINE: Access the 'results' property directly
+            renderSearchSuggestions(data?.results);
         } catch (error) {
             console.error('Failed to fetch search suggestions:', error);
             suggestionsContainer.style.display = 'none';
