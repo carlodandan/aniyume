@@ -34,5 +34,35 @@
     <lastmod>2025-09-15</lastmod>
     <priority>0.6</priority>
   </url>
-
+  <url>
+    <loc>https://aniyume.qzz.io/anime/browse</loc>
+    <lastmod>2025-09-15</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <!-- Some of Dynamic Pages -->
+  <url>
+    <loc>https://aniyume.qzz.io/anime/info?id=one-piece-100</loc>
+    <lastmod>2025-09-15</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aniyume.qzz.io/anime/info?id=naruto-shippuden-355</loc>
+    <lastmod>2025-09-15</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aniyume.qzz.io/anime/info?id=bleach-thousand-year-blood-war-arc-15665</loc>
+    <lastmod>2025-09-15</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aniyume.qzz.io/anime/info?id=gachiakuta-19785</loc>
+    <lastmod>2025-09-15</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aniyume.qzz.io/anime/info?id=jujutsu-kaisen-tv-534</loc>
+    <lastmod>2025-09-15</lastmod>
+    <priority>0.9</priority>
+  </url>
 </urlset>
