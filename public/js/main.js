@@ -54,8 +54,8 @@ function showPage(pageId) {
         initInfoPage();
     } else if (pageId === 'popular') { // Add this case
         loadMostPopularAnime();
-    } else if (pageId === 'new') {
-        loadNewAnime();
+    } else if (pageId === 'recent') {
+        loadRecentPage();
     } else if (pageId === 'favorites') {
         loadFavoritesPage();
     } else if (pageId === 'recently-updated') {
@@ -118,9 +118,34 @@ function loadHeroCollage(spotlights) {
     collageContainer.innerHTML = images;
 }
 
+async function loadRecentPage() {
+    loadRecentlyAdded();
+    loadRecentlyUpdated();
+}
+
+async function loadRecentlyAdded() {
+    const grid = document.querySelector('.recently-added-grid');
+    if (!grid) return;
+
+    try {
+        grid.innerHTML = '<div class="loading">Loading recently added anime...</div>';
+        const data = await fetchRecentAnime();
+        const animeList = data.results.data;
+
+        if (animeList && animeList.length > 0) {
+            grid.innerHTML = animeList.map(anime => createAnimeCard(anime)).join('');
+        } else {
+            grid.innerHTML = '<div class="no-data">No new anime available</div>';
+        }
+    } catch (error) {
+        console.error('Error loading new anime:', error);
+        grid.innerHTML = '<div class="error">Failed to load new anime. Please try again later.</div>';
+    }
+}
+
 // Load recently updated anime from API
-async function loadRecentlyUpdatedAnime() {
-    const grid = document.querySelector('.recently-updated-grid');
+async function loadRecentlyUpdated() {
+    const grid = document.querySelector('#recent-page .recently-updated-grid');
     if (!grid) return;
 
     try {
@@ -569,8 +594,8 @@ function handleRouting() {
 
     if (path === '/popular') {
         showPage('popular');
-    } else if (path === '/new') {
-        showPage('new');
+    } else if (path === '/recent') {
+        showPage('recent');
     } else if (path === '/favorites') {
         showPage('favorites');
     } else if (path === '/movie') {

@@ -4,28 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Name -->
     <title>AniYume - Watch Your Favorite Anime</title>
     <meta name="description" content="Watch trending and classic anime online on AniYume. Stream episodes of Naruto, One Piece, Bleach, and more.">
     <meta name="keywords" content="anime, watch anime, free anime streaming, Naruto, One Piece, Bleach">
     <meta name="author" content="carlodee@github">
 
-    <!-- Open Graph for social sharing -->
     <meta property="og:title" content="AniYume - Watch Your Favorite Anime Online">
     <meta property="og:description" content="Stream trending and classic anime online.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://aniyume.qzz.io/">
 
-    <!-- Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/responsive.css">
 
-    <!-- Icons -->
     <link rel="icon" href="/img/aniyume.svg" type="image/svg+xml">
     
-    <!-- PopAds -->
     <script type="text/javascript" data-cfasync="false">
     /*<![CDATA[/* */
     (function(){var y=window,n="ebdaaceaaddef036b33792f197977815",i=[["siteId",95+430*367+5080847],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],o=["d3d3LmludGVsbGlwb3B1cC5jb20vV0pML29taWNyb2JlLm1pbi5qcw==","ZDNtcjd5MTU0ZDJxZzUuY2xvdWRmcm9udC5uZXQvQmFSWUIvVFBORy9hYXVkaW81Lm1pbi5jc3M="],v=-1,k,q,g=function(){clearTimeout(q);v++;if(o[v]&&!(1783837180000<(new Date).getTime()&&1<v)){k=y.document.createElement("script");k.type="text/javascript";k.async=!0;var t=y.document.getElementsByTagName("script")[0];k.src="https://"+atob(o[v]);k.crossOrigin="anonymous";k.onerror=g;k.onload=function(){clearTimeout(q);y[n.slice(0,16)+n.slice(0,16)]||g()};q=setTimeout(g,5E3);t.parentNode.insertBefore(k,t)}};if(!y[n]){try{Object.freeze(y[n]=i)}catch(e){}g()}})();
@@ -45,7 +40,7 @@
                     <li><a href="/" class="active" onclick="event.preventDefault(); handleGoHome()">Home</a></li>
                     <li><a href="/movie" onclick="event.preventDefault(); showPage('movie')">Movie</a></li>
                     <li><a href="/popular" onclick="event.preventDefault(); showPage('popular')">Popular</a></li>
-                    <li><a href="/new" onclick="event.preventDefault(); showPage('new')">New</a></li>
+                    <li><a href="/recent" onclick="event.preventDefault(); showPage('recent')">Recent</a></li>
                     <li><a href="/favorites" onclick="event.preventDefault(); showPage('favorites')">Favorites</a></li>
                     <li><a href="/about" onclick="event.preventDefault(); showPage('about')">About Us</a></li>
                 </ul>
@@ -179,11 +174,15 @@
             </div>
         </section>
 
-        <section id="new-page" class="page">
+        <section id="recent-page" class="page">
             <div class="container">
-                <h2 class="section-title"><i class="fas fa-rocket"></i> Newly Added</h2>
+                <h2 class="section-title"><i class="fas fa-rocket"></i> Recently Added</h2>
                 <p class="hero-description">Discover the latest anime series/movies added to the list.</p>
-                <div class="anime-grid">
+                <div class="recently-added-grid anime-grid">
+                    </div>
+                <h2 class="section-title"><i class="fas fa-history"></i> Recently Updated</h2>
+                <p class="hero-description">Discover the most recently updated anime series/movies.</p>
+                <div class="recently-updated-grid anime-grid">
                     </div>
             </div>
         </section>
@@ -264,7 +263,7 @@
                     <a href="/" onclick="event.preventDefault(); handleGoHome()">Home</a>
                     <a href="/movie" onclick="event.preventDefault(); showPage('movie')">Movie</a>
                     <a href="/popular" onclick="event.preventDefault(); showPage('popular')">Popular</a>
-                    <a href="/new" onclick="event.preventDefault(); showPage('new')">New</a>
+                    <a href="/recent" onclick="event.preventDefault(); showPage('recent')">Recent</a>
                     <a href="/favorites" onclick="event.preventDefault(); showPage('new')">Favorites</a>
                     <a href="/about" onclick="event.preventDefault(); showPage('about')">About Us</a>
             </div>
