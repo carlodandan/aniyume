@@ -437,9 +437,9 @@ async function navigateToPlayer(animeId) {
             throw new Error("No episodes found for this anime.");
         }
 
-        // Now we can safely get the first episode
-        const firstEpisode = episodes[0];
-        const fullEpisodeId = firstEpisode.id;
+        // Now we can safely get the latest episode
+        const latestEpisode = episodes[episodes.length - 1];
+        const fullEpisodeId = latestEpisode.id;
 
         const url = `/watch?ep=${encodeURIComponent(fullEpisodeId)}`;
         history.pushState({ pageId: 'watch', episodeId: fullEpisodeId }, null, url);

@@ -52,18 +52,16 @@ function changeServer(serverName, type) {
  * Populates the episode dropdown menu.
  * @param {Array} episodes - The list of episodes for the anime.
  */
-/**
- * Populates the episode dropdown menu.
- * @param {Array} episodes - The list of episodes for the anime.
- */
 function renderEpisodeDropdown(episodes) {
     const episodeSelect = document.getElementById('episode-select');
     if (!episodeSelect) return;
 
-    // Use the array index + 1 for the episode number, as the object itself lacks it.
-    episodeSelect.innerHTML = episodes.map((ep, index) => `
+    const reversedEpisodes = [...episodes].reverse();
+    const totalEpisodes = episodes.length;
+
+    episodeSelect.innerHTML = reversedEpisodes.map((ep, index) => `
         <option value="${ep.id}" ${ep.id === currentEpisodeId ? 'selected' : ''}>
-            Episode ${index + 1}
+            Episode ${totalEpisodes - index}
         </option>
     `).join('');
 }
