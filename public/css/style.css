@@ -1505,3 +1505,15 @@ footer {
   margin: 0 0 7px 0;
   line-height: 1.6; /* Improves readability */
 }
+
+/* CSS for a centered Ko-fi button below the footer */
+.kofi-footer-embed {
+    /* Set a max-width, as the button/widget is narrow */
+    max-width: 300px;
+    /* This is the key to centering a block element */
+    margin: 20px auto;
+    /* Adds a little space between the footer and the button */
+    padding-bottom: 20px;
+    /* Ensures any text or element inside is centered */
+    text-align: center;
+}
