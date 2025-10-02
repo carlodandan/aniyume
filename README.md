@@ -4,7 +4,7 @@
 </p>
 </p>
 <p align="center">
-    <a href="https://aniyume.webbase.workers.dev">AniYume</a> (an on-going project...) is an open-source and ad-free anime streaming service that uses <a href="https://github.com/itzzzme/anime-api">Custom</a> API, built using HTML with Javascript and Tailwind (and traditional) CSS. It lets you easily find any anime with intuitive search & suggestion feature. <br><br>
+    <a href="https://aniyume.qzz.io/">AniYume</a> (an on-going project...) is an open-source and ad-free anime streaming service that uses <a href="https://github.com/itzzzme/anime-api">Custom</a> API, built using HTML with Javascript and Tailwind (and traditional) CSS. It lets you easily find any anime with intuitive search & suggestion feature. <br><br>
 </p>
 
 <p align="center">
