@@ -50,6 +50,7 @@ function showPage(pageId) {
         initPlayer();
     } else if (pageId === 'home') {
         loadTrendingAnime();
+        loadContinueWatching();
     } else if (pageId === 'info') {
         initInfoPage();
     } else if (pageId === 'popular') { // Add this case
@@ -584,6 +585,7 @@ window.handleGoHome = handleGoHome;
 window.navigateToBrowseResults = navigateToBrowseResults;
 window.navigateToSearch = navigateToSearch;
 window.handleSuggestionClick = handleSuggestionClick;
+window.resumeAnime = resumeAnime;
 
 /**
  * Centralized routing function to handle page navigation and reloads.
@@ -631,6 +633,52 @@ function handleRouting() {
         showPage('home');
     }
 }
+
+async function loadContinueWatching() {
+    const section = document.getElementById('continue-watching-section');
+    const grid = section.querySelector('.continue-watching-grid');
+
+    try {
+        const history = JSON.parse(localStorage.getItem('aniyumeWatchHistory')) || {};
+        const historyItems = Object.values(history).sort((a, b) => new Date(b.watchedAt) - new Date(a.watchedAt));
+
+        if (historyItems.length > 0) {
+            grid.innerHTML = historyItems.map(item => createContinueWatchingCard(item)).join('');
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
+        }
+    } catch (e) {
+        console.error("Failed to load watch history:", e);
+        section.style.display = 'none';
+    }
+}
+
+function createContinueWatchingCard(item) {
+    return `
+        <a href="/watch?ep=${item.episodeId}&t=${item.currentTime}" onclick="event.preventDefault(); resumeAnime('${item.episodeId}', ${item.currentTime})" class="anime-card-vertical">
+            <div class="anime-card-img-wrapper skeleton">
+                <img src="${item.poster}" alt="${item.title}" loading="lazy" class="anime-card-img" onload="this.parentNode.classList.remove('skeleton')">
+                <div class="anime-card-overlay">
+                    <div class="anime-info-onhover">
+                        <i class="fas fa-play"></i>
+                        <p>Resume</p>
+                    </div>
+                </div>
+            </div>
+            <div class="anime-info">
+                <h3 class="anime-title">${item.title}</h3>
+            </div>
+        </a>
+    `;
+}
+
+function resumeAnime(episodeId, startTime) {
+    const url = `/watch?ep=${encodeURIComponent(episodeId)}&t=${startTime}`;
+    history.pushState({ pageId: 'watch', episodeId: episodeId, startTime: startTime }, null, url);
+    showPage('watch');
+}
+
 
 // Initialize the page and set up routing
 document.addEventListener('DOMContentLoaded', function() {

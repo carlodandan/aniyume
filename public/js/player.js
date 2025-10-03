@@ -18,6 +18,48 @@ export const playerManager = {
     }
 };
 
+// --- Function to save watch progress ---
+function saveWatchProgress(animeDetails, episodeId, currentTime, duration) {
+    // Only save if we have the necessary details and the user is at least 60 seconds in
+    if (!animeDetails || !animeDetails.id || !episodeId || currentTime < 60 || currentTime > duration - 60) {
+        return;
+    }
+
+    try {
+        let history = JSON.parse(localStorage.getItem('aniyumeWatchHistory')) || {};
+        
+        history[animeDetails.id] = {
+            id: animeDetails.id,
+            title: animeDetails.title,
+            poster: animeDetails.poster,
+            episodeId: episodeId,
+            currentTime: currentTime,
+            watchedAt: new Date().toISOString()
+        };
+
+        const sortedHistory = Object.values(history).sort((a, b) => new Date(b.watchedAt) - new Date(a.watchedAt));
+        const limitedHistory = sortedHistory.slice(0, 12).reduce((acc, item) => {
+            acc[item.id] = item;
+            return acc;
+        }, {});
+
+        localStorage.setItem('aniyumeWatchHistory', JSON.stringify(limitedHistory));
+    } catch (e) {
+        console.error("Failed to save watch history:", e);
+    }
+}
+
+// --- Debounce helper to limit how often a function is called ---
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+
+
 /**
  * Changes the currently playing episode.
  * @param {string} newEpisodeId - The full ID of the new episode to play.
@@ -118,7 +160,7 @@ function addQualitySetting(newPlayer, hls) {
 /**
  * Initializes the ArtPlayer instance for a specific episode.
  */
-async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null) {
+async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServerDetails = null) {
     const playerContainer = document.getElementById('player');
     playerContainer.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
     
@@ -142,9 +184,8 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
         const sourceUrl = streamData.streamingLink.link.file;
         const subtitles = streamData.streamingLink.tracks || [];
         
-        // Subtitle options object is correctly defined here
         const subtitleOptions = {
-            html: true, // Crucial: ensures HTML tags are parsed
+            html: true,
             style: {
                 color: '#FFFFFF',
                 'text-shadow': '2px 2px 2px rgba(0, 0, 0, 1)',
@@ -159,8 +200,7 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
             url: finalProxyUrl,
             container: playerContainer,
             type: 'm3u8',
-            volume: 1,
-            volume: parseFloat(localStorage.getItem('player-volume')) || 0.7, // Load volume or default to 0.7
+            volume: parseFloat(localStorage.getItem('player-volume')) || 0.7,
             autoplay: true,
             playsInline: true,
             pip: true,
@@ -173,12 +213,12 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
             hotkey: true,
             mutex: true,
             theme: '#8b5cf6',
-            // Passed here for player initialisation (good)
             subtitle: subtitleOptions, 
             moreVideoAttr: { 
                 crossOrigin: 'anonymous',
                 preload: 'none',
-                playsInline: true },
+                playsInline: true 
+            },
             controls: [
                 {
                     position: 'right',
@@ -193,18 +233,15 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
                     click: () => playerManager.get() && (playerManager.get().forward = 10),
                 },
             ],
-            // Inside your customType m3u8 function
             customType: {
                 m3u8: (video, url, art) => {
                     if (Hls.isSupported()) {
                         if (art.hls) art.hls.destroy();
                         const hls = new Hls();
 
-                        // ADD THIS ERROR HANDLER
                         hls.on(Hls.Events.ERROR, function (event, data) {
                             if (data.fatal) {
                                 console.error('Fatal HLS Error:', data);
-                                // You can try to recover or just show an error message
                                 art.notice.show = `Error: Could not load video. Please try another server.`;
                             }
                         });
@@ -212,6 +249,15 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
                         hls.loadSource(url);
                         hls.attachMedia(video);
                         art.hls = hls;
+
+                        const debouncedSave = debounce(() => {
+                            if (art.video.currentTime && art.video.duration) {
+                                saveWatchProgress(animeDetails, fullEpisodeId, art.video.currentTime, art.video.duration);
+                            }
+                        }, 5000);
+
+                        art.on('video:timeupdate', debouncedSave);
+                        
                         art.on("destroy", () => hls.destroy());
                         hls.on(Hls.Events.MANIFEST_PARSED, () => addQualitySetting(art, hls));
                     } else {
@@ -231,11 +277,10 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
             newPlayer.setting.add({
                 name: 'subtitles', html: 'Subtitles', tooltip: defaultSub ? defaultSub.label : 'Off',
                 selector: [
-                    { html: 'Display', switch: true, onSwitch: (item) => { item.tooltip = item.switch ? 'Hide' : 'Show'; newPlayer.subtitle.show = !item.switch; return !item.switch; }},
+                    { html: 'Display', switch: true, onSwitch: (item) => { item.tooltip = item.switch ? 'Hide' : 'Show'; newPlayer.subtitle.show = !item.switch; return !item.switch; } },
                     ...subtitles.map(sub => ({ html: sub.label, url: sub.file, default: sub.file === defaultSub.file }))
                 ],
                 onSelect: (item) => {
-                    // FIX #1: Ensure subtitleOptions (with html: true) is passed when switching
                     newPlayer.subtitle.switch(item.url, {
                         name: item.html,
                         ...subtitleOptions 
@@ -244,7 +289,6 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
                 }
             });
             
-            // FIX #2: Ensure subtitleOptions (with html: true) is passed for the default subtitle
             if (defaultSub) newPlayer.subtitle.switch(defaultSub.file, {
                 name: defaultSub.label,
                 ...subtitleOptions
@@ -263,7 +307,7 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
 export async function initPlayer() {
     playerManager.destroy();
     populateSidebar({});
-    populateBreadcrumbs({}); // Clear breadcrumbs from previous page
+    populateBreadcrumbs({}); 
 
     const urlParams = new URLSearchParams(window.location.search);
     currentEpisodeId = urlParams.get('ep');
@@ -277,29 +321,27 @@ export async function initPlayer() {
     currentAnimeId = currentEpisodeId.split('?')[0];
 
     try {
-        // Fetch episode list, anime details, and schedule data concurrently
         const [episodeData, animeDetailsResponse, scheduleDataResponse] = await Promise.all([
             fetchEpisodes(currentAnimeId),
             fetchAnimeDetails(currentAnimeId),
             fetchScheduleData(currentAnimeId)
         ]);
         
-        // Populate the sidebar and breadcrumbs with the fetched details
-        if (animeDetailsResponse?.results?.data) {
-            const details = animeDetailsResponse.results.data;
+        const details = animeDetailsResponse?.results?.data;
+
+        if (details) {
             populateSidebar(details);
             populateBreadcrumbs(details);
             setupSidebarEvents();
         }
 
-        // Populate the next episode date
         if (scheduleDataResponse?.nextEpisodeSchedule) {
             populateSelectorsWithSchedule(scheduleDataResponse);
         }
         
         renderEpisodeDropdown(episodeData.episodes || []);
         setupEventListeners();
-        await loadPlayerForEpisode(currentEpisodeId);
+        await loadPlayerForEpisode(currentEpisodeId, details); // Pass 'details' here
         await loadComments(currentEpisodeId);
         setupCommentForm();
     } catch (err) {
@@ -308,6 +350,7 @@ export async function initPlayer() {
         if (container) container.innerHTML = `<div class="error-message">Failed to load page data.</div>`;
     }
 }
+
 
 /**
  * Populates the sidebar with anime poster and metadata.
@@ -326,8 +369,6 @@ function populateSidebar(details) {
     if (details.poster) {
         poster.innerHTML = `<img src="${details.poster}" alt="${details.title || 'Anime'} Poster" loading="lazy" onerror="this.style.display='none'">`;
     }
-
-    description.innerHTML = details.animeInfo?.Overview || 'No description available.';
     
     detailsContainer.innerHTML = `
         <span><strong>Type:</strong> ${details.showType || 'N/A'}</span>
