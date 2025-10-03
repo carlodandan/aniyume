@@ -152,6 +152,7 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
             container: playerContainer,
             type: 'm3u8',
             volume: 1,
+            volume: parseFloat(localStorage.getItem('player-volume')) || 0.7, // Load volume or default to 0.7
             autoplay: true,
             playsInline: true,
             pip: true,
@@ -182,11 +183,29 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
                     click: () => playerManager.get() && (playerManager.get().forward = 10),
                 },
             ],
+            subtitle: {
+                html: true, // This tells Artplayer to parse HTML tags in subtitles
+                style: {
+                    color: '#FFFFFF',
+                    'text-shadow': '1px 1px 2px rgba(0, 0, 0, 0.7)', // Adds a nice shadow for readability
+                },
+            },
+            // Inside your customType m3u8 function
             customType: {
                 m3u8: (video, url, art) => {
                     if (Hls.isSupported()) {
                         if (art.hls) art.hls.destroy();
                         const hls = new Hls();
+
+                        // ADD THIS ERROR HANDLER
+                        hls.on(Hls.Events.ERROR, function (event, data) {
+                            if (data.fatal) {
+                                console.error('Fatal HLS Error:', data);
+                                // You can try to recover or just show an error message
+                                art.notice.show = `Error: Could not load video. Please try another server.`;
+                            }
+                        });
+
                         hls.loadSource(url);
                         hls.attachMedia(video);
                         art.hls = hls;
@@ -199,6 +218,10 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
             },
         });
         playerManager.set(newPlayer);
+
+        newPlayer.on('volumeChange', (volume) => {
+            localStorage.setItem('player-volume', volume);
+        });
 
         if (subtitles.length > 0) {
             // ... (subtitle logic remains unchanged)
@@ -221,6 +244,7 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
         playerContainer.innerHTML = `<div class="error-message">${err.message}</div>`;
     }
 }
+
 
 /**
  * Initializes the watch page.
