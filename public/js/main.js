@@ -663,6 +663,9 @@ function createContinueWatchingCard(item) {
             <div class="anime-info">
                 <h3 class="anime-title">${item.title}</h3>
             </div>
+            <div class="progress-bar">
+                <div class="progress" style="width:${(item.currentTime / item.duration) * 100}%"></div>
+            </div>
         </a>
     `;
 }
