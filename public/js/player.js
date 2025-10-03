@@ -164,6 +164,10 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
     const playerContainer = document.getElementById('player');
     playerContainer.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
     
+    // NEW: Read the start time ('t') from the URL for resuming playback
+    const urlParams = new URLSearchParams(window.location.search);
+    const startTime = parseFloat(urlParams.get('t')) || 0;
+
     try {
         const servers = await fetchServersForEpisode(fullEpisodeId);
         if (!servers || servers.length === 0) throw new Error("No streaming servers found.");
@@ -213,6 +217,7 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
             hotkey: true,
             mutex: true,
             theme: '#8b5cf6',
+            startTime: startTime, // NEW: This tells the player where to start
             subtitle: subtitleOptions, 
             moreVideoAttr: { 
                 crossOrigin: 'anonymous',
@@ -256,7 +261,8 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
                             }
                         }, 5000);
 
-                        art.on('video:timeupdate', debouncedSave);
+                        // **FIXED**: The event name is 'timeupdate'
+                        art.on('timeupdate', debouncedSave);
                         
                         art.on("destroy", () => hls.destroy());
                         hls.on(Hls.Events.MANIFEST_PARSED, () => addQualitySetting(art, hls));
@@ -299,7 +305,6 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
         playerContainer.innerHTML = `<div class="error-message">${err.message}</div>`;
     }
 }
-
 
 /**
  * Initializes the watch page.
