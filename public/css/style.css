@@ -1272,39 +1272,33 @@ footer {
   margin-top: 10px;
   margin-left: 70px;
 }
+/* --- SUGGESTED ADDITIONS to style.css --- */
+
+/* Style the headings for the selectors */
 .server-selector h3, .episode-selector-container h3 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  color: var(--primary);
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  gap: 10px;
+  font-size: 1.1rem;  /* Make it slightly smaller */
+  font-weight: 600;
+  color: #cbd5e1;   /* Brighter text color */
+  margin-bottom: 0.75rem;
 }
+
+/* Enhance the dropdowns */
 .selector-dropdown {
-  width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  background: var(--card-bg);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #cbd5e1;
-  font-size: 14px;
-  cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1em;
+  background-color: #1f2937; /* A slightly different shade for depth */
+  border: 1px solid #334155;
+  transition: all 0.2s ease-in-out;
+  font-weight: 500;
 }
-.selector-dropdown:focus {
-  outline: none;
+
+.selector-dropdown:hover {
   border-color: var(--primary);
 }
+
+.selector-dropdown:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3); /* Add a focus ring */
+}
+
 .breadcrumb {
   padding: 20px 0 0 70px;
   font-size: 14px;
@@ -1343,32 +1337,23 @@ footer {
   background-color: #000;
 }
 .watch-info-sidebar {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 20px;
-  height: -webkit-fit-content;
-  height: -moz-fit-content;
-  height: fit-content;
+  background: transparent; /* Remove background */
+  padding: 0; /* Remove padding, as we'll space elements internally */
+  position: sticky; /* Make the sidebar stick on scroll */
+  top: calc(var(--header-height) + 2rem); /* Position below the header */
 }
+
 .sidebar-poster {
-  width: 100%;
-  max-width: 230px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  display: block;
-  margin-inline: auto;
-  height: 330px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
+
 .sidebar-description {
-  font-size: 0.9rem;
-  color: #94a3b8;
-  line-height: 1.6;
-  margin-bottom: 10px;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  font-size: 1rem; /* Increase font size for readability */
+  -webkit-line-clamp: 5; /* Allow a bit more text before expanding */
+  color: #b0c4de; /* A slightly lighter, softer color */
 }
+
 .sidebar-description.expanded {
   -webkit-line-clamp: unset;
 }
@@ -1392,16 +1377,18 @@ footer {
   background: #4a5568;
   border-radius: 3px;
 }
+/* Style the anime details for clarity */
 .sidebar-details span {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-  color: #cbd5e1;
+  font-size: 1rem;
+  background-color: rgba(30, 41, 59, 0.5); /* Add a subtle background to each detail */
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #334155;
 }
+
 .sidebar-details span strong {
-  color: #94a3b8;
-  margin-right: 8px;
-  font-weight: 500;
+  color: #e2e8f0; /* Make the label bolder and brighter */
+  font-weight: 600;
 }
 @keyframes spin {
   to {
@@ -1516,4 +1503,45 @@ footer {
     padding-bottom: 20px;
     /* Ensures any text or element inside is centered */
     text-align: center;
+}
+
+/* --- SUGGESTED ADDITIONS to style.css --- */
+
+/* Give the entire watch page a bit more breathing room */
+#watch-page .container {
+  max-width: 1600px; /* Allows for a wider, more cinematic layout */
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Improve the grid layout for better balance */
+.watch-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px; /* Slightly increase sidebar width */
+  gap: 2.5rem; /* Increase gap for better separation */
+  align-items: flex-start; /* Aligns items to the top */
+}
+
+/* Make the player the hero of the page */
+.watch-main-content .player-wrapper {
+  width: 100%; /* Use full width of the grid column */
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); /* Deeper shadow for more focus */
+}
+
+/* Clean up the selector section */
+.selectors-container {
+  grid-template-columns: repeat(2, 1fr); /* Change to 2 columns for a cleaner look */
+  margin-left: 0; /* Remove the old margin */
+  margin-top: 1.5rem; /* Add space above the selectors */
+  gap: 2rem;
+}
+
+/* Adjust the comment section to match the new layout */
+.comment-section {
+  margin: 2rem 0 0 0; /* Remove horizontal margins, add top margin */
+  background: transparent; /* Remove the background to blend with the page */
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Use a border instead */
+  padding: 2rem 0 0 0; /* Adjust padding */
 }
