@@ -445,12 +445,6 @@ function createAnimeCard(anime) {
     `;
 }
 
-// Function to handle anime card clicks and navigate to player
-function showAnimePlayer(animeId) {
-    localStorage.setItem('selectedAnimeId', animeId);
-    showPage('player');
-}
-
 async function navigateToPlayer(animeId) {
     try {
         // fetchEpisodes now returns an object: { totalEpisodes, episodes }
