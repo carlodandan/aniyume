@@ -191,9 +191,14 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
         const subtitleOptions = {
             html: true,
             style: {
-                color: '#FFFFFF',
-                'text-shadow': '2px 2px 2px rgba(0, 0, 0, 1)',
-            }
+                color: "#FFFFFF",
+                "text-shadow": "2px 2px 2px rgba(0, 0, 0, 1)",
+                "font-weight": "400",
+                left: "50%",
+                transform: "translateX(-50%)",
+                "margin-bottom": "2rem",
+            },
+            escape: false,
         };
         
         const headers = { Referer: new URL(sourceUrl).origin + "/" };
