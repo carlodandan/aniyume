@@ -145,11 +145,7 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
             html: true, // Crucial: ensures HTML tags are parsed
             style: {
                 color: '#FFFFFF',
-                'text-shadow': `
-                    -2px -2px 0 #000, 2px -2px 0 #000,
-                    -2px 2px 0 #000, 2px 2px 0 #000,
-                    2px 2px 5px rgba(0,0,0,0.5)
-                `
+                'text-shadow': '2px 2px 2px rgba(0, 0, 0, 1)',
             }
         };
         const headers = { Referer: new URL(sourceUrl).origin + "/" };
