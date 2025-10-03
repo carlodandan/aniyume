@@ -18,25 +18,39 @@ export const playerManager = {
     }
 };
 
-// --- Function to save watch progress ---
+/**
+ * Saves the current watch progress to localStorage.
+ * Ensures data is saved even for short videos.
+ * @param {Object} animeDetails - {id, title, poster}
+ * @param {string} episodeId - The current episode ID
+ * @param {number} currentTime - Current playback time in seconds
+ * @param {number} duration - Video duration in seconds
+ */
 function saveWatchProgress(animeDetails, episodeId, currentTime, duration) {
-    // Only save if we have the necessary details and the user is at least 60 seconds in
-    if (!animeDetails || !animeDetails.id || !episodeId || currentTime < 60 || currentTime > duration - 60) {
-        return;
-    }
-
     try {
+        // Fallback for missing animeDetails
+        const animeId = animeDetails?.id || episodeId; 
+        const title = animeDetails?.title || "Unknown Title";
+        const poster = animeDetails?.poster || "";
+
+        // Only save if we have an episodeId and currentTime is valid
+        if (!episodeId || currentTime <= 0) return;
+
+        // Get current history
         let history = JSON.parse(localStorage.getItem('aniyumeWatchHistory')) || {};
-        
-        history[animeDetails.id] = {
-            id: animeDetails.id,
-            title: animeDetails.title,
-            poster: animeDetails.poster,
+
+        // Update or add entry
+        history[animeId] = {
+            id: animeId,
+            title: title,
+            poster: poster,
             episodeId: episodeId,
-            currentTime: currentTime,
+            currentTime: Math.floor(currentTime),
+            duration: Math.floor(duration),
             watchedAt: new Date().toISOString()
         };
 
+        // Keep latest 12 entries only
         const sortedHistory = Object.values(history).sort((a, b) => new Date(b.watchedAt) - new Date(a.watchedAt));
         const limitedHistory = sortedHistory.slice(0, 12).reduce((acc, item) => {
             acc[item.id] = item;
@@ -44,8 +58,10 @@ function saveWatchProgress(animeDetails, episodeId, currentTime, duration) {
         }, {});
 
         localStorage.setItem('aniyumeWatchHistory', JSON.stringify(limitedHistory));
-    } catch (e) {
-        console.error("Failed to save watch history:", e);
+        // Optional: debug
+        // console.log("Watch progress saved:", limitedHistory);
+    } catch (err) {
+        console.error("Failed to save watch history:", err);
     }
 }
 
