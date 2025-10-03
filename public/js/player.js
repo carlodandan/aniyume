@@ -141,6 +141,17 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
         const streamData = await fetchStreamData(fullEpisodeId, chosenServer.serverName, chosenServer.type);
         const sourceUrl = streamData.streamingLink.link.file;
         const subtitles = streamData.streamingLink.tracks || [];
+        const subtitleOptions = {
+            html: true, // Crucial: ensures HTML tags are parsed
+            style: {
+                color: '#FFFFFF',
+                'text-shadow': `
+                    -2px -2px 0 #000, 2px -2px 0 #000,
+                    -2px 2px 0 #000, 2px 2px 0 #000,
+                    2px 2px 5px rgba(0,0,0,0.5)
+                `
+            }
+        };
         const headers = { Referer: new URL(sourceUrl).origin + "/" };
         const finalProxyUrl = `${PROXY_URL}m3u8-proxy?url=${encodeURIComponent(sourceUrl)}&headers=${encodeURIComponent(JSON.stringify(headers))}`;
         playerContainer.innerHTML = "";
@@ -162,6 +173,7 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
             hotkey: true,
             mutex: true,
             theme: '#8b5cf6',
+            subtitle: subtitleOptions,
             moreVideoAttr: { 
                 crossOrigin: 'anonymous',
                 preload: 'none',
@@ -180,13 +192,6 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
                     click: () => playerManager.get() && (playerManager.get().forward = 10),
                 },
             ],
-            subtitle: {
-                html: true, // This tells Artplayer to parse HTML tags in subtitles
-                style: {
-                    color: '#FFFFFF',
-                    'text-shadow': '2px 2px 2px rgba(0, 0, 0, 1)', // Adds a nice shadow for readability
-                },
-            },
             // Inside your customType m3u8 function
             customType: {
                 m3u8: (video, url, art) => {
@@ -230,11 +235,17 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
                     ...subtitles.map(sub => ({ html: sub.label, url: sub.file, default: sub.file === defaultSub.file }))
                 ],
                 onSelect: (item) => {
-                    newPlayer.subtitle.switch(item.url, { name: item.html });
+                    newPlayer.subtitle.switch(item.url, {
+                        name: item.html,
+                        ...subtitleOptions
+                     });
                     return item.html;
                 }
             });
-            if (defaultSub) newPlayer.subtitle.switch(defaultSub.file, { name: defaultSub.label });
+            if (defaultSub) newPlayer.subtitle.switch(defaultSub.file, {
+                name: defaultSub.label,
+                ...subtitleOptions
+            });
         }
     } catch (err) {
         console.error("Failed to initialize player:", err);
