@@ -55,10 +55,8 @@ function changeServer(serverName, type) {
 function renderEpisodeDropdown(episodes) {
     const episodeSelect = document.getElementById('episode-select');
     if (!episodeSelect) return;
-
     const reversedEpisodes = [...episodes].reverse();
     const totalEpisodes = episodes.length;
-
     episodeSelect.innerHTML = reversedEpisodes.map((ep, index) => `
         <option value="${ep.id}" ${ep.id === currentEpisodeId ? 'selected' : ''}>
             Episode ${totalEpisodes - index}
@@ -74,10 +72,9 @@ function renderEpisodeDropdown(episodes) {
 function renderServerDropdown(servers, activeServer) {
     const serverSelect = document.getElementById('server-select');
     if (!serverSelect) return;
-
     serverSelect.innerHTML = servers.map(server => `
         <option 
-            value="${server.serverName}_${server.type}" 
+            value="${server.serverName}_${server.type}"
             ${server.serverName === activeServer.serverName && server.type === activeServer.type ? 'selected' : ''}>
             ${server.serverName} (${server.type})
         </option>
