@@ -247,9 +247,6 @@
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 15px;
   }
-  #home-page .trending-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
   #popular-page .anime-grid, #new-page .anime-grid, #favorites-page .anime-grid, #search-results-page .anime-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -270,10 +267,6 @@
   }
   .anime-card-vertical .anime-meta {
     font-size: 12px;
-  }
-  .trending-rank {
-    font-size: 0.8rem;
-    padding: 8px 4px;
   }
 }
 @media (max-width: 576px) {

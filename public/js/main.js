@@ -49,7 +49,6 @@ function showPage(pageId) {
     } else if (pageId === 'watch') {
         initPlayer();
     } else if (pageId === 'home') {
-        loadTrendingAnime();
         loadContinueWatching();
     } else if (pageId === 'info') {
         initInfoPage();
@@ -77,36 +76,6 @@ function showPage(pageId) {
 function toggleMenu() {
     const nav = document.getElementById('nav');
     nav.classList.toggle('active');
-}
-
-// Load trending anime from API
-async function loadTrendingAnime() {
-    const trendingGrid = document.querySelector('.trending-grid');
-    if (!trendingGrid) return;
-
-    try {
-        trendingGrid.innerHTML = '<div class="loading">Loading trending anime...</div>';
-        const homeData = await fetchHomeData();
-
-        // Populate hero collage
-        if (homeData?.results?.spotlights) {
-            loadHeroCollage(homeData.results.spotlights);
-        }
-
-        let trendingAnime = [];
-        if (homeData && homeData.results && Array.isArray(homeData.results.trending)) {
-            trendingAnime = homeData.results.trending;
-        }
-        if (trendingAnime.length > 0) {
-            trendingGrid.innerHTML = trendingAnime.map(anime => createAnimeCard(anime)).join('');
-        } else {
-            trendingGrid.innerHTML = '<div class="no-data">No trending anime available</div>';
-        }
-
-    } catch (error) {
-        console.error('Error loading trending anime:', error);
-        trendingGrid.innerHTML = '<div class="error">Failed to load trending anime. Please try again later.</div>';
-    }
 }
 
 // Create hero collage background
@@ -440,7 +409,6 @@ function createAnimeCard(anime) {
             <div class="anime-info">
                 <h3 class="anime-title">${title}</h3>
             </div>
-            ${rank ? `<div class="trending-rank">#${rank}</div>` : ''}
         </a>
     `;
 }
