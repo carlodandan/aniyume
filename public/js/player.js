@@ -4,6 +4,9 @@ let player = null;
 let currentAnimeId = null;
 let currentEpisodeId = null;
 
+// Configurable debounce interval for saving watch progress
+const DEBOUNCE_DELAY = 5000; // 5 seconds, configurable
+
 /**
  * Manages the Artplayer instance.
  */
@@ -20,7 +23,7 @@ export const playerManager = {
 
 /**
  * Saves the current watch progress to localStorage.
- * Ensures data is saved even for short videos.
+ * Stores under a consistent key, updates existing entries, removes completed episodes.
  * @param {Object} animeDetails - {id, title, poster}
  * @param {string} episodeId - The current episode ID
  * @param {number} currentTime - Current playback time in seconds
@@ -29,7 +32,7 @@ export const playerManager = {
 function saveWatchProgress(animeDetails, episodeId, currentTime, duration) {
     try {
         // Fallback for missing animeDetails
-        const animeId = animeDetails?.id || episodeId; 
+        const animeId = animeDetails?.id || episodeId.split('?')[0];
         const title = animeDetails?.title || "Unknown Title";
         const poster = animeDetails?.poster || "";
 
@@ -39,8 +42,8 @@ function saveWatchProgress(animeDetails, episodeId, currentTime, duration) {
         // Get current history
         let history = JSON.parse(localStorage.getItem('aniyumeWatchHistory')) || {};
 
-        // Update or add entry
-        history[animeId] = {
+        // Update or add entry, keyed by episodeId
+        history[episodeId] = {
             id: animeId,
             title: title,
             poster: poster,
@@ -50,14 +53,25 @@ function saveWatchProgress(animeDetails, episodeId, currentTime, duration) {
             watchedAt: new Date().toISOString()
         };
 
+        // Remove entry if episode is completed (currentTime >= duration)
+        if (history[episodeId].currentTime >= history[episodeId].duration) {
+            delete history[episodeId];
+        }
+
         // Keep latest 12 entries only
         const sortedHistory = Object.values(history).sort((a, b) => new Date(b.watchedAt) - new Date(a.watchedAt));
         const limitedHistory = sortedHistory.slice(0, 12).reduce((acc, item) => {
-            acc[item.id] = item;
+            acc[item.episodeId] = item;
             return acc;
         }, {});
 
         localStorage.setItem('aniyumeWatchHistory', JSON.stringify(limitedHistory));
+
+        // Update Continue Watching section if on home page
+        if (window.loadContinueWatching) {
+            window.loadContinueWatching();
+        }
+
         // Optional: debug
         // console.log("Watch progress saved:", limitedHistory);
     } catch (err) {
@@ -280,7 +294,7 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
                             if (art.video.currentTime && art.video.duration) {
                                 saveWatchProgress(animeDetails, fullEpisodeId, art.video.currentTime, art.video.duration);
                             }
-                        }, 5000);
+                        }, DEBOUNCE_DELAY);
 
                         // attach debounced saver
                         art.on('timeupdate', debouncedSave);
