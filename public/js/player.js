@@ -181,10 +181,16 @@ async function loadPlayerForEpisode(fullEpisodeId, preferredServerDetails = null
                 },
             ],
             subtitle: {
-                html: true, // This tells Artplayer to parse HTML tags in subtitles
+                html: true,
                 style: {
-                    color: '#FFFFFF',
-                    'text-shadow': '1px 1px 2px rgba(0, 0, 0, 0.7)', // Adds a nice shadow for readability
+                    color: '#FFFFFF', // This is the main text color (white)
+                    'text-shadow': `
+                        -2px -2px 0 #000,
+                        2px -2px 0 #000,
+                        -2px  2px 0 #000,
+                        2px  2px 0 #000,
+                        2px  2px 5px rgba(0,0,0,0.5)
+                    `
                 },
             },
             // Inside your customType m3u8 function
