@@ -580,6 +580,7 @@ window.navigateToBrowseResults = navigateToBrowseResults;
 window.navigateToSearch = navigateToSearch;
 window.handleSuggestionClick = handleSuggestionClick;
 window.resumeAnime = resumeAnime;
+window.loadContinueWatching = loadContinueWatching;
 
 /**
  * Centralized routing function to handle page navigation and reloads.
