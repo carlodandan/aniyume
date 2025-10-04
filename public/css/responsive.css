@@ -485,3 +485,30 @@
     margin: auto;
   }
 }
+
+/* Responsive adjustments for continue watching anime cards */
+@media (max-width: 768px) {
+  .continue-watching-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+  }
+  .anime-card-vertical {
+    max-width: 140px;
+  }
+  .anime-card-img-wrapper {
+    padding-top: 140%;
+  }
+}
+
+@media (max-width: 480px) {
+  .continue-watching-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .anime-card-vertical {
+    max-width: 120px;
+  }
+  .anime-card-img-wrapper {
+    padding-top: 120%;
+  }
+}
