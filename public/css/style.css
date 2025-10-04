@@ -1494,29 +1494,3 @@ footer {
     /* Ensures any text or element inside is centered */
     text-align: center;
 }
-
-.skip-controls {
-    display: flex;
-    gap: 15px;
-    margin: 15px 0 25px 0;
-    justify-content: center;
-}
-
-.skip-toggle {
-    background-color: var(--card-bg);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #cbd5e1;
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    font-size: 14px;
-}
-
-.skip-toggle.active {
-    background-color: var(--primary);
-    color: white;
-}
-
-
