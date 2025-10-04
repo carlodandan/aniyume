@@ -527,6 +527,12 @@ section {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 25px;
 }
+.continue-watching-grid {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+.continue-watching-grid .anime-card-vertical {
+  margin-left: 10px;
+}
 #popular-page .anime-grid, #new-page .anime-grid, #favorites-page .anime-grid, #search-results-page .anime-grid {
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
