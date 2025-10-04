@@ -31,7 +31,7 @@ function setWithExpiry(key, value, ttlMs) {
     localStorage.setItem(key, JSON.stringify(item));
 }
 
-function getWithExpiry(key) {
+export function getWithExpiry(key) {
     const itemStr = localStorage.getItem(key);
     if (!itemStr) return null;
     try {

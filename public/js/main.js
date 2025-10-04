@@ -1,7 +1,7 @@
 // Import API functions
 import { fetchHomeData, fetchAnimeDetails, fetchRecentlyUpdatedAnime, fetchEpisodes, fetchMostPopularAnime, fetchRecentAnime, fetchAnimeByGenre, fetchAnimeByAZ, fetchMostFavoriteAnime, fetchSearchResults, fetchSearchSuggestions, fetchMovies } from './api.js';
 // Import the player initializer and the new player manager
-import { initPlayer, playerManager } from './player.js';
+import { initPlayer, playerManager, getWithExpiry } from './player.js';
 
 let currentInfoPageAnimeId = null;
 
@@ -617,8 +617,17 @@ async function loadContinueWatching() {
     const grid = section.querySelector('.continue-watching-grid');
 
     try {
-        const history = JSON.parse(localStorage.getItem('aniyumeWatchHistory')) || {};
-        const historyItems = Object.values(history).sort((a, b) => new Date(b.watchedAt) - new Date(a.watchedAt));
+        // Use getWithExpiry from player.js to get watch history with expiry check
+        const history = window.getWithExpiry ? window.getWithExpiry('aniyumeWatchHistory') : JSON.parse(localStorage.getItem('aniyumeWatchHistory'));
+        if (!history) {
+            section.style.display = 'none';
+            return;
+        }
+
+        // Filter valid entries only
+        const historyItems = Object.values(history)
+            .filter(item => item && item.id && item.title && item.poster && item.currentTime != null && item.episodeId)
+            .sort((a, b) => new Date(b.watchedAt) - new Date(a.watchedAt));
 
         if (historyItems.length > 0) {
             grid.innerHTML = historyItems.map(item => createContinueWatchingCard(item)).join('');
