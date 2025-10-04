@@ -104,6 +104,17 @@
                         <div class="player-wrapper">
                             <div id="player"></div>
                         </div>
+                        <div class="auto-controls" style="display: flex; justify-content: center; gap: 15px; margin-bottom: 25px;">
+                            <button id="auto-play-toggle" class="skip-toggle">Auto Play: OFF</button>
+                            <button id="auto-skip-intro-toggle" class="skip-toggle">Auto Skip Intro/Outro: OFF</button>
+                            <button id="auto-next-toggle" class="skip-toggle">Auto Next: OFF</button>
+                            <button id="prev-episode-btn" class="skip-toggle" title="Previous Episode">
+                                <i class="fas fa-backward"></i>
+                            </button>
+                            <button id="next-episode-btn" class="skip-toggle" title="Next Episode">
+                                <i class="fas fa-forward"></i>
+                            </button>
+                        </div>
                         <div class="selectors-container">
                             <div class="server-selector">
                                 <h3><i class="fas fa-server"></i> Servers</h3>
@@ -281,6 +292,7 @@
     </script>
 
     <script defer src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/artplayer-plugin-chapter@1.0.1/dist/artplayer-plugin-chapter.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/artplayer-plugin-hls-control/dist/artplayer-plugin-hls-control.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script type="module" src="/js/main.js"></script>

@@ -3,6 +3,140 @@ import { fetchComments, postComment, fetchEpisodes, fetchServersForEpisode, fetc
 let player = null;
 let currentAnimeId = null;
 let currentEpisodeId = null;
+let introStart = 0;
+let introEnd = 0;
+let outroStart = 0;
+let outroEnd = 0;
+
+let autoPlayEnabled = false;
+let autoNextEnabled = false;
+let autoSkipEnabled = false;
+let skipIntroEnabled = false;
+let skipOutroEnabled = false;
+
+/**
+ * Generates CSS styles for chapter progress bar based on intro and outro times.
+ */
+function getChapterStyles(intro, outro, skipIntroEnabled, skipOutroEnabled) {
+  let styles = `
+        .art-chapters {
+            gap: 0px !important;
+        }
+    `;
+if (intro && outro) {
+    if (
+      intro.start === 0 &&
+      intro.end === 0 &&
+      outro.start === 0 &&
+      outro.end === 0
+    ) {
+      styles += ``;
+    } else if (
+      intro.start === 0 &&
+      intro.end === 0 &&
+      outro.start !== 0 &&
+      outro.end !== 0
+    ) {
+      if (!skipOutroEnabled) {
+        styles += `
+                    .art-chapter:nth-child(2) {
+                        background-color: #fdd253;
+                        transform: scaleY(0.6);
+                    }
+                `;
+      }
+    } else if (
+      intro.start === 0 &&
+      intro.end !== 0 &&
+      outro.start === 0 &&
+      outro.end === 0
+    ) {
+      if (!skipIntroEnabled) {
+        styles += `
+                    .art-chapter:nth-child(1){
+                        background-color: #fdd253;
+                        transform: scaleY(0.6);
+                    }
+                `;
+      }
+    } else if (
+      intro.start === 0 &&
+      intro.end !== 0 &&
+      outro.start !== 0 &&
+      outro.end !== 0
+    ) {
+      if (!skipIntroEnabled) {
+        styles += `
+                    .art-chapter:nth-child(1) {
+                        background-color: #fdd253;
+                        transform: scaleY(0.6);
+                    }
+                `;
+      }
+      if (!skipOutroEnabled) {
+        styles += `
+                    .art-chapter:nth-child(3) {
+                        background-color: #fdd253;
+                        transform: scaleY(0.6);
+                    }
+                `;
+      }
+    } else if (
+      intro.start !== 0 &&
+      intro.end !== 0 &&
+      outro.start === 0 &&
+      outro.end === 0
+    ) {
+      if (!skipIntroEnabled) {
+        styles += `
+                    .art-chapter:nth-child(2) {
+                        background-color: #fdd253;
+                        transform: scaleY(0.6);
+                    }
+                `;
+      }
+    } else if (
+      intro.start !== 0 &&
+      intro.end !== 0 &&
+      outro.start !== 0 &&
+      outro.end !== 0
+    ) {
+      if (!skipIntroEnabled) {
+        styles += `
+                    .art-chapter:nth-child(2) {
+                        background-color: #fdd253;
+                        transform: scaleY(0.6);
+                    }
+                `;
+      }
+      if (!skipOutroEnabled) {
+        styles += `
+                    .art-chapter:nth-child(4) {
+                        background-color: #fdd253;
+                        transform: scaleY(0.6);
+                    }
+                `;
+      }
+    }
+  }
+  return styles;
+}
+
+/**
+ * Updates the injected chapter styles based on current state.
+ */
+function updateChapterStyles() {
+    const intro = { start: introStart, end: introEnd };
+    const outro = { start: outroStart, end: outroEnd };
+    const chapterStyles = getChapterStyles(intro, outro, skipIntroEnabled, skipOutroEnabled);
+    let styleElement = document.getElementById('chapter-styles');
+    if (!styleElement) {
+        styleElement = document.createElement('style');
+        styleElement.id = 'chapter-styles';
+        document.head.appendChild(styleElement);
+    }
+    styleElement.textContent = chapterStyles;
+}
 
 // Configurable debounce interval for saving watch progress
 const DEBOUNCE_DELAY = 5000; // 5 seconds, configurable
@@ -129,6 +263,17 @@ async function changeEpisode(newEpisodeId) {
     url.searchParams.set('ep', newEpisodeId);
     history.pushState({ episodeId: newEpisodeId }, '', url.toString());
 
+    // Reset skip toggles
+    skipIntroEnabled = false;
+    skipOutroEnabled = false;
+    autoSkipEnabled = false;
+    document.getElementById('skip-intro-toggle').textContent = 'Skip Intro: OFF';
+    document.getElementById('skip-intro-toggle').classList.remove('active');
+    document.getElementById('skip-outro-toggle').textContent = 'Skip Outro: OFF';
+    document.getElementById('skip-outro-toggle').classList.remove('active');
+    document.getElementById('auto-skip-intro-toggle').textContent = 'Auto Skip Intro/Outro: OFF';
+    document.getElementById('auto-skip-intro-toggle').classList.remove('active');
+
     playerManager.destroy();
 
     await loadPlayerForEpisode(newEpisodeId);
@@ -243,6 +388,27 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
         const streamData = await fetchStreamData(fullEpisodeId, chosenServer.serverName, chosenServer.type);
         const sourceUrl = streamData.streamingLink.link.file;
         const subtitles = streamData.streamingLink.tracks || [];
+
+        // Extract intro and outro timestamps
+        const intro = streamData.streamingLink.intro;
+        const outro = streamData.streamingLink.outro;
+        if (intro) {
+            introStart = intro.start;
+            introEnd = intro.end;
+        } else {
+            introStart = 0;
+            introEnd = 0;
+        }
+        if (outro) {
+            outroStart = outro.start;
+            outroEnd = outro.end;
+        } else {
+            outroStart = 0;
+            outroEnd = 0;
+        }
+
+        // Inject custom styles for chapter progress bar
+        updateChapterStyles();
         
         const subtitleOptions = {
             html: true,
@@ -278,8 +444,16 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
             hotkey: true,
             mutex: true,
             theme: '#8b5cf6',
+            plugins: [
+                artplayerPluginChapter({
+                    chapters: [
+                        ...(introStart && introEnd ? [{ start: introStart, end: introEnd, title: 'Intro' }] : []),
+                        ...(outroStart && outroEnd ? [{ start: outroStart, end: outroEnd, title: 'Outro' }] : [])
+                    ]
+                })
+            ],
             startTime: startTime, // NEW: This tells the player where to start
-            subtitle: subtitleOptions, 
+            subtitle: subtitleOptions,
             moreVideoAttr: { 
                 crossOrigin: 'anonymous',
                 preload: 'none',
@@ -318,13 +492,24 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
 
                         const debouncedSave = debounce(() => {
                             if (art.video.currentTime && art.video.duration) {
-                                saveWatchProgress(animeDetails, fullEpisodeId, art.video.currentTime, art.video.duration);
-                            }
-                        }, DEBOUNCE_DELAY);
+                        saveWatchProgress(animeDetails, fullEpisodeId, art.video.currentTime, art.video.duration);
+                    }
+                }, DEBOUNCE_DELAY);
 
-                        // attach debounced saver
-                        art.on('timeupdate', debouncedSave);
-                        
+                // attach debounced saver
+                art.on('timeupdate', debouncedSave);
+
+                // Auto-skip logic
+                art.on('timeupdate', () => {
+                    const currentTime = art.video.currentTime;
+                    if ((skipIntroEnabled || autoSkipEnabled) && introStart && introEnd && currentTime >= introStart && currentTime <= introEnd) {
+                        art.seek = introEnd;
+                    }
+                    if ((skipOutroEnabled || autoSkipEnabled) && outroStart && outroEnd && currentTime >= outroStart && currentTime <= outroEnd) {
+                        art.seek = outroEnd;
+                    }
+                });
+
                         // create named beforeunload handler so we can remove it later
                         const onBeforeUnload = () => {
                             try {
@@ -350,6 +535,94 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
             },
         });
         playerManager.set(newPlayer);
+
+        // Setup skip controls
+        const skipIntroBtn = document.getElementById('skip-intro-toggle');
+        if (skipIntroBtn) {
+            skipIntroBtn.addEventListener('click', () => {
+                skipIntroEnabled = !skipIntroEnabled;
+                skipIntroBtn.textContent = `Skip Intro: ${skipIntroEnabled ? 'ON' : 'OFF'}`;
+                skipIntroBtn.classList.toggle('active', skipIntroEnabled);
+                updateChapterStyles();
+            });
+        }
+
+        const skipOutroBtn = document.getElementById('skip-outro-toggle');
+        if (skipOutroBtn) {
+            skipOutroBtn.addEventListener('click', () => {
+                skipOutroEnabled = !skipOutroEnabled;
+                skipOutroBtn.textContent = `Skip Outro: ${skipOutroEnabled ? 'ON' : 'OFF'}`;
+                skipOutroBtn.classList.toggle('active', skipOutroEnabled);
+                updateChapterStyles();
+            });
+        }
+
+        // Setup auto controls
+        const autoPlayBtn = document.getElementById('auto-play-toggle');
+        if (autoPlayBtn) {
+            autoPlayBtn.addEventListener('click', () => {
+                autoPlayEnabled = !autoPlayEnabled;
+                autoPlayBtn.textContent = `Auto Play: ${autoPlayEnabled ? 'ON' : 'OFF'}`;
+                autoPlayBtn.classList.toggle('active', autoPlayEnabled);
+            });
+        }
+
+        const autoSkipIntroBtn = document.getElementById('auto-skip-intro-toggle');
+        if (autoSkipIntroBtn) {
+            autoSkipIntroBtn.addEventListener('click', () => {
+                autoSkipEnabled = !autoSkipEnabled;
+                autoSkipIntroBtn.textContent = `Auto Skip Intro/Outro: ${autoSkipEnabled ? 'ON' : 'OFF'}`;
+                autoSkipIntroBtn.classList.toggle('active', autoSkipEnabled);
+                // Sync skipIntroEnabled and skipOutroEnabled with autoSkipEnabled
+                skipIntroEnabled = autoSkipEnabled;
+                skipOutroEnabled = autoSkipEnabled;
+                const skipIntroBtn = document.getElementById('skip-intro-toggle');
+                if (skipIntroBtn) {
+                    skipIntroBtn.textContent = `Skip Intro: ${skipIntroEnabled ? 'ON' : 'OFF'}`;
+                    skipIntroBtn.classList.toggle('active', skipIntroEnabled);
+                }
+                const skipOutroBtn = document.getElementById('skip-outro-toggle');
+                if (skipOutroBtn) {
+                    skipOutroBtn.textContent = `Skip Outro: ${skipOutroEnabled ? 'ON' : 'OFF'}`;
+                    skipOutroBtn.classList.toggle('active', skipOutroEnabled);
+                }
+                updateChapterStyles();
+            });
+        }
+
+        const autoNextBtn = document.getElementById('auto-next-toggle');
+        if (autoNextBtn) {
+            autoNextBtn.addEventListener('click', () => {
+                autoNextEnabled = !autoNextEnabled;
+                autoNextBtn.textContent = `Auto Next: ${autoNextEnabled ? 'ON' : 'OFF'}`;
+                autoNextBtn.classList.toggle('active', autoNextEnabled);
+            });
+        }
+
+        // Setup previous and next episode buttons
+        const prevEpisodeBtn = document.getElementById('prev-episode-btn');
+        if (prevEpisodeBtn) {
+            prevEpisodeBtn.addEventListener('click', () => {
+                // Logic to go to previous episode
+                if (!window.episodeList || !currentEpisodeId) return;
+                const currentIndex = window.episodeList.findIndex(ep => ep.id === currentEpisodeId);
+                if (currentIndex > 0) {
+                    changeEpisode(window.episodeList[currentIndex - 1].id);
+                }
+            });
+        }
+
+        const nextEpisodeBtn = document.getElementById('next-episode-btn');
+        if (nextEpisodeBtn) {
+            nextEpisodeBtn.addEventListener('click', () => {
+                // Logic to go to next episode
+                if (!window.episodeList || !currentEpisodeId) return;
+                const currentIndex = window.episodeList.findIndex(ep => ep.id === currentEpisodeId);
+                if (currentIndex >= 0 && currentIndex < window.episodeList.length - 1) {
+                    changeEpisode(window.episodeList[currentIndex + 1].id);
+                }
+            });
+        }
 
         newPlayer.on('volumeChange', (volume) => {
             setWithExpiry('player-volume', volume, 24 * 60 * 60 * 1000);
