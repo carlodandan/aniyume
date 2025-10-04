@@ -49,6 +49,7 @@ function showPage(pageId) {
     } else if (pageId === 'watch') {
         initPlayer();
     } else if (pageId === 'home') {
+        loadTrendingAnime();
         loadContinueWatching();
     } else if (pageId === 'info') {
         initInfoPage();
@@ -76,6 +77,20 @@ function showPage(pageId) {
 function toggleMenu() {
     const nav = document.getElementById('nav');
     nav.classList.toggle('active');
+}
+
+// Load trending anime from API
+async function loadTrendingAnime() {
+    try {
+        const homeData = await fetchHomeData();
+
+        // Populate hero collage only
+        if (homeData?.results?.spotlights) {
+            loadHeroCollage(homeData.results.spotlights);
+        }
+    } catch (error) {
+        console.error('Error loading hero collage:', error);
+    }
 }
 
 // Create hero collage background
