@@ -21,6 +21,31 @@ export const playerManager = {
     }
 };
 
+// --- LocalStorage with expiry helpers ---
+function setWithExpiry(key, value, ttlMs) {
+    const now = Date.now();
+    const item = {
+        value: value,
+        expiry: now + ttlMs,
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+}
+
+function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) return null;
+    try {
+        const item = JSON.parse(itemStr);
+        if (!item.expiry || Date.now() > item.expiry) {
+            localStorage.removeItem(key);
+            return null;
+        }
+        return item.value;
+    } catch {
+        return null;
+    }
+}
+
 /**
  * Saves the current watch progress to localStorage.
  * Stores under a consistent key, updates existing entries, removes completed episodes.
@@ -39,8 +64,8 @@ function saveWatchProgress(animeDetails, episodeId, currentTime, duration) {
         // Only save if we have an episodeId and currentTime is valid
         if (!episodeId || currentTime <= 0) return;
 
-        // Get current history
-        let history = JSON.parse(localStorage.getItem('aniyumeWatchHistory')) || {};
+        // Load watch history with expiry check
+        const history = getWithExpiry('aniyumeWatchHistory') || [];
 
         // Update or add entry, keyed by episodeId
         history[episodeId] = {
@@ -65,7 +90,8 @@ function saveWatchProgress(animeDetails, episodeId, currentTime, duration) {
             return acc;
         }, {});
 
-        localStorage.setItem('aniyumeWatchHistory', JSON.stringify(limitedHistory));
+        // Save watch history with expiry
+        setWithExpiry('aniyumeWatchHistory', limitedHistory, 24 * 60 * 60 * 1000);
 
         // Update Continue Watching section if on home page
         if (window.loadContinueWatching) {
@@ -239,7 +265,7 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
             url: finalProxyUrl,
             container: playerContainer,
             type: 'm3u8',
-            volume: parseFloat(localStorage.getItem('player-volume')) || 0.7,
+            volume: parseFloat(getWithExpiry('player-volume')) || 0.7,
             autoplay: true,
             playsInline: true,
             pip: true,
@@ -326,8 +352,9 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
         playerManager.set(newPlayer);
 
         newPlayer.on('volumeChange', (volume) => {
-            localStorage.setItem('player-volume', volume);
+            setWithExpiry('player-volume', volume, 24 * 60 * 60 * 1000);
         });
+
 
         if (subtitles.length > 0) {
             const defaultSub = subtitles.find(s => s.label.toLowerCase().includes('english')) || subtitles[0];
