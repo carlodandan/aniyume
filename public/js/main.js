@@ -618,7 +618,7 @@ async function loadContinueWatching() {
 
     try {
         // Use getWithExpiry from player.js to get watch history with expiry check
-        const history = window.getWithExpiry ? window.getWithExpiry('aniyumeWatchHistory') : JSON.parse(localStorage.getItem('aniyumeWatchHistory'));
+        const history = getWithExpiry('aniyumeWatchHistory');
         if (!history) {
             section.style.display = 'none';
             return;
