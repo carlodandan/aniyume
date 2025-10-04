@@ -385,20 +385,19 @@ section {
   overflow: hidden;
 }
 .hero-collage-bg {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: calc(100% + 20px);
-  height: calc(100% + 20px);
-  display: -ms-grid;
+  position: fixed;        /* Always stays in place */
+  top: 0;
+  left: 0;
+  width: 100vw;           /* Full screen width */
+  height: 100vh;          /* Full screen height */
   display: grid;
-  -ms-grid-columns: (1fr)[4];
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
-  z-index: -3;
-  opacity: 15;
+  z-index: -1;            /* Behind all content */
+  opacity: 0.15;          /* Light, subtle background */
   -webkit-filter: blur(5px);
   filter: blur(5px);
+  pointer-events: none;   /* Background won't block clicks */
 }
 .hero-collage-bg img {
   width: 100%;
