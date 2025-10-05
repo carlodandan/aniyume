@@ -533,7 +533,7 @@ section {
 #continue-watching-section {
   margin-left: 10px;
 }
-#popular-page .anime-grid, #new-page .anime-grid, #favorites-page .anime-grid, #search-results-page .anime-grid {
+#popular-page .anime-grid, #recent-page .anime-grid, #favorites-page .anime-grid, #movie-page .anime-grid, #search-results-page .anime-grid {
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
 }
@@ -1493,4 +1493,45 @@ footer {
     padding-bottom: 20px;
     /* Ensures any text or element inside is centered */
     text-align: center;
+}
+
+.art-subtitle {
+  padding-inline: 0px !important;
+  gap: 2px !important;
+
+  color: #ffffff;
+  font-weight: 400;
+
+  /* Simulated outer stroke with multiple shadows */
+  text-shadow:
+    -2px -2px 0 #000,  
+     2px -2px 0 #000,
+    -2px  2px 0 #000,
+     2px  2px 0 #000,
+    0px  2px 0 #000,
+    2px  0px 0 #000,
+   -2px  0px 0 #000,
+    0px -2px 0 #000;
+}
+.art-volume-panel {
+  padding-bottom: 20px !important;
+}
+.art-settings {
+  margin-bottom: 20px !important;
+}
+.art-subtitle {
+  margin-bottom: 1rem !important;
+}
+.art-subtitle-line {
+  min-width: fit-content;
+  background-color: rgba(0, 0, 0, 0.200) !important;
+  padding-inline: 3px !important;
+}
+.art-subtitle-line,
+.art-subtitle-line * {
+  font-size: inherit !important;
+  color: inherit !important;
+  line-height: inherit !important;
+  font-weight: inherit !important;
+  white-space: inherit !important;
 }

@@ -247,8 +247,8 @@
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 15px;
   }
-  #popular-page .anime-grid, #new-page .anime-grid, #favorites-page .anime-grid, #search-results-page .anime-grid {
-    grid-template-columns: repeat(2, 1fr);
+  #popular-page .anime-grid, #recent-page .anime-grid, #favorites-page .anime-grid, #movie-page .anime-grid, #search-results-page .anime-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
   .anime-card-img-wrapper {
     padding-top: 150%;

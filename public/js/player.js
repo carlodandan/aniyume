@@ -272,7 +272,6 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
         updateChapterStyles(introStart, introEnd, outroStart, outroEnd);
 
         const subtitleOptions = {
-            html: true,
             style: {
                 color: "#FFFFFF",
                 "text-shadow": "2px 2px 2px rgba(0, 0, 0, 1)",
