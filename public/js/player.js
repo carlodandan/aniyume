@@ -1,8 +1,14 @@
 import { fetchComments, postComment, fetchEpisodes, fetchServersForEpisode, fetchStreamData, PROXY_URL, fetchAnimeDetails, fetchScheduleData } from './api.js';
+import { getChapterStyles, updateChapterStyles } from './artPlayer/chapter.js';
 
 let player = null;
 let currentAnimeId = null;
 let currentEpisodeId = null;
+
+let introStart = 0;
+let introEnd = 0;
+let outroStart = 0;
+let outroEnd = 0;
 
 // Configurable debounce interval for saving watch progress
 const DEBOUNCE_DELAY = 5000; // 5 seconds, configurable
@@ -243,7 +249,28 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
         const streamData = await fetchStreamData(fullEpisodeId, chosenServer.serverName, chosenServer.type);
         const sourceUrl = streamData.streamingLink.link.file;
         const subtitles = streamData.streamingLink.tracks || [];
+
+        // Extract intro/outro timestamps into globals
+        const intro = streamData.streamingLink.intro;
+        const outro = streamData.streamingLink.outro;
+        if (intro) {
+            introStart = intro.start;
+            introEnd = intro.end;
+        } else {
+            introStart = 0;
+            introEnd = 0;
+        }
+        if (outro) {
+            outroStart = outro.start;
+            outroEnd = outro.end;
+        } else {
+            outroStart = 0;
+            outroEnd = 0;
+        }
         
+        // Inject custom styles for chapter progress bar
+        updateChapterStyles(introStart, introEnd, outroStart, outroEnd);
+
         const subtitleOptions = {
             html: true,
             style: {
@@ -298,6 +325,14 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
                     tooltip: 'Forward 10s',
                     click: () => playerManager.get() && (playerManager.get().forward = 10),
                 },
+            ],
+            plugins: [
+                artplayerPluginChapter({
+                    chapters: [
+                        ...(introStart && introEnd ? [{ start: introStart, end: introEnd, title: 'Intro' }] : []),
+                        ...(outroStart && outroEnd ? [{ start: outroStart, end: outroEnd, title: 'Outro' }] : [])
+                    ]
+                })
             ],
             customType: {
                 m3u8: (video, url, art) => {

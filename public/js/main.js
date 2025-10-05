@@ -171,28 +171,6 @@ async function loadMostPopularAnime() {
     }
 }
 
-// Load new anime from API
-async function loadNewAnime() {
-    const grid = document.querySelector('#new-page .anime-grid');
-    if (!grid) return;
-
-    try {
-        grid.innerHTML = '<div class="loading">Loading new anime...</div>';
-        // This uses the /recently-added endpoint
-        const data = await fetchRecentAnime();
-        const animeList = data.results.data;
-
-        if (animeList && animeList.length > 0) {
-            grid.innerHTML = animeList.map(anime => createAnimeCard(anime)).join('');
-        } else {
-            grid.innerHTML = '<div class="no-data">No new anime available</div>';
-        }
-    } catch (error) {
-        console.error('Error loading new anime:', error);
-        grid.innerHTML = '<div class="error">Failed to load new anime. Please try again later.</div>';
-    }
-}
-
 // Load favorites anime from API
 async function loadFavoritesPage() {
     const grid = document.querySelector('#favorites-page .anime-grid');
