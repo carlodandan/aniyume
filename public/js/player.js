@@ -224,7 +224,12 @@ function addQualitySetting(newPlayer, hls) {
  */
 async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServerDetails = null) {
     const playerContainer = document.getElementById('player');
-    playerContainer.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
+    playerContainer.innerHTML = `
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading video player...</p>
+        </div>
+    `;
     
     // NEW: Read the start time ('t') from the URL for resuming playback
     const urlParams = new URLSearchParams(window.location.search);
@@ -414,7 +419,14 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
         }
     } catch (err) {
         console.error("Failed to initialize player:", err);
-        playerContainer.innerHTML = `<div class="error-message">${err.message}</div>`;
+        playerContainer.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Failed to load video</h3>
+                <p>${err.message}</p>
+                <button class="retry-btn" onclick="location.reload()">Try Again</button>
+            </div>
+        `;
     }
 }
 
@@ -431,7 +443,13 @@ export async function initPlayer() {
 
     if (!currentEpisodeId) {
         const container = document.querySelector('.watch-layout');
-        if (container) container.innerHTML = `<div class="error-message">No episode ID provided.</div>`;
+        if (container) container.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>No Episode Selected</h3>
+                <p>Please select an episode to start watching.</p>
+            </div>
+        `;
         return;
     }
     
@@ -464,7 +482,14 @@ export async function initPlayer() {
     } catch (err) {
         console.error("Failed to set up player page:", err);
         const container = document.querySelector('.watch-layout');
-        if (container) container.innerHTML = `<div class="error-message">Failed to load page data.</div>`;
+        if (container) container.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Failed to Load Page</h3>
+                <p>Please check your connection and try again.</p>
+                <button class="retry-btn" onclick="location.reload()">Reload Page</button>
+            </div>
+        `;
     }
 }
 
@@ -484,14 +509,33 @@ function populateSidebar(details) {
     poster.classList.add('skeleton');
     poster.innerHTML = ''; // Clear previous image
     if (details.poster) {
-        poster.innerHTML = `<img src="${details.poster}" alt="${details.title || 'Anime'} Poster" loading="lazy" onerror="this.style.display='none'">`;
+        poster.innerHTML = `
+            <div class="poster-container">
+                <img src="${details.poster}" alt="${details.title || 'Anime'} Poster" loading="lazy" onerror="this.style.display='none'">
+                <div class="poster-overlay">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        `;
     }
     
     detailsContainer.innerHTML = `
-        <span><strong>Type:</strong> ${details.showType || 'N/A'}</span>
-        <span><strong>Status:</strong> ${details.animeInfo?.Status || 'N/A'}</span>
-        <span><strong>Premiere:</strong> ${details.animeInfo?.Aired?.match(/\d{4}/)?.[0] || 'N/A'}</span>
-        <span><strong>Score:</strong> ${details.animeInfo?.["MAL Score"] || 'N/A'}</span>
+        <div class="detail-item">
+            <i class="fas fa-tv"></i>
+            <span><strong>Type:</strong> ${details.showType || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-circle"></i>
+            <span><strong>Status:</strong> ${details.animeInfo?.Status || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-calendar"></i>
+            <span><strong>Premiere:</strong> ${details.animeInfo?.Aired?.match(/\d{4}/)?.[0] || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-star"></i>
+            <span><strong>Score:</strong> ${details.animeInfo?.["MAL Score"] || 'N/A'}</span>
+        </div>
     `;
 }
 
@@ -529,14 +573,30 @@ function populateSelectorsWithSchedule(scheduleData) {
         });
 
         nextEpisodeContainer.innerHTML = `
-            <h3><i class="fas fa-clock"></i> Next Episode</h3>
-            <p>${formattedDate}</p>
+            <div class="schedule-card">
+                <div class="schedule-header">
+                    <i class="fas fa-clock"></i>
+                    <h3>Next Episode</h3>
+                </div>
+                <div class="schedule-time">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>${formattedDate}</span>
+                </div>
+            </div>
         `;
     } catch (error) {
         console.error("Error parsing next episode schedule date:", error);
         nextEpisodeContainer.innerHTML = `
-            <h3><i class="fas fa-clock"></i> Next Episode</h3>
-            <p>Date unavailable</p>
+            <div class="schedule-card">
+                <div class="schedule-header">
+                    <i class="fas fa-clock"></i>
+                    <h3>Next Episode</h3>
+                </div>
+                <div class="schedule-time">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Date unavailable</span>
+                </div>
+            </div>
         `;
     }
 }
@@ -551,7 +611,7 @@ function setupSidebarEvents() {
     if (seeMoreBtn && description) {
         // Only show the button if the description is actually overflowing
         if (description.scrollHeight > description.clientHeight) {
-            seeMoreBtn.style.display = 'block';
+            seeMoreBtn.style.display = 'flex';
         } else {
             seeMoreBtn.style.display = 'none';
         }
@@ -559,9 +619,9 @@ function setupSidebarEvents() {
         seeMoreBtn.addEventListener('click', () => {
             description.classList.toggle('expanded');
             if (description.classList.contains('expanded')) {
-                seeMoreBtn.textContent = 'See Less';
+                seeMoreBtn.innerHTML = '<i class="fas fa-chevron-up"></i> See Less';
             } else {
-                seeMoreBtn.textContent = 'See More';
+                seeMoreBtn.innerHTML = '<i class="fas fa-chevron-down"></i> See More';
             }
         });
     }
@@ -571,7 +631,12 @@ async function loadComments(episodeId) {
   const commentList = document.getElementById("comment-list");
   if (!commentList) return;
 
-  commentList.innerHTML = "<p>Loading comments...</p>";
+  commentList.innerHTML = `
+    <div class="comments-loading">
+        <div class="spinner small"></div>
+        <p>Loading comments...</p>
+    </div>
+  `;
 
   // 1. Fetch the entire response object from the API.
   const responseData = await fetchComments(episodeId);
@@ -581,16 +646,31 @@ async function loadComments(episodeId) {
 
   // 3. Now, check if the extracted array is empty.
   if (!comments || comments.length === 0) {
-    commentList.innerHTML = "<p>No comments yet. Be the first!</p>";
+    commentList.innerHTML = `
+        <div class="no-comments">
+            <i class="fas fa-comments"></i>
+            <h4>No comments yet</h4>
+            <p>Be the first to share your thoughts!</p>
+        </div>
+    `;
     return;
   }
 
   // 4. Map over the correct array to display the comments.
   commentList.innerHTML = comments.map(c => `
-    <div class="comment">
-      <strong>${c.username}</strong>
-      <span class="timestamp">${new Date(c.timestamp).toLocaleString()}</span>
-      <p>${c.comment}</p>
+    <div class="comment-card">
+        <div class="comment-header">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="comment-meta">
+                <strong class="username">${c.username}</strong>
+                <span class="timestamp">${new Date(c.timestamp).toLocaleString()}</span>
+            </div>
+        </div>
+        <div class="comment-content">
+            <p>${c.comment}</p>
+        </div>
     </div>
   `).join("");
 }
@@ -605,13 +685,44 @@ function setupCommentForm() {
   // A single event listener that reads the current episode ID on click
   button.addEventListener("click", async () => {
     const comment = textarea.value.trim();
-    if (!comment) return;
+    if (!comment) {
+        textarea.classList.add('error');
+        setTimeout(() => textarea.classList.remove('error'), 2000);
+        return;
+    }
 
     const username = `anonymous-${Math.random().toString(36).substring(2, 6)}`;
 
+    // Show loading state
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+    button.disabled = true;
+
     // Use the module-level 'currentEpisodeId' which is always up-to-date
     await postComment({ username, comment, episodeId: currentEpisodeId });
+    
+    // Reset button state
+    button.innerHTML = '<i class="fas fa-paper-plane"></i> Post Comment';
+    button.disabled = false;
+    
     textarea.value = "";
     loadComments(currentEpisodeId); // refresh comments with the correct ID
+  });
+
+  // Add input event to show character count
+  textarea.addEventListener('input', () => {
+    const charCount = textarea.value.length;
+    let counter = textarea.parentNode.querySelector('.char-counter');
+    if (!counter) {
+        counter = document.createElement('div');
+        counter.className = 'char-counter';
+        textarea.parentNode.appendChild(counter);
+    }
+    counter.textContent = `${charCount}/500`;
+    
+    if (charCount > 500) {
+        counter.classList.add('error');
+    } else {
+        counter.classList.remove('error');
+    }
   });
 }
