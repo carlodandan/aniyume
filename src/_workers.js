@@ -1,5 +1,5 @@
 // --- App Logic ---
-const TADB_API_BASE = 'https://aniyume-api.vercel.app';
+const TADB_API_BASE = 'https://aesthetic-anime-api.webbase.workers.dev';
 
 // Helper function to create a response with CORS headers
 const createCorsResponse = (body, options = {}) => {
