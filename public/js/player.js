@@ -1,4 +1,4 @@
-import { fetchComments, postComment, fetchEpisodes, fetchServersForEpisode, fetchStreamData, PROXY_URL, fetchAnimeDetails, fetchScheduleData } from './api.js';
+import { fetchComments, postComment, fetchEpisodes, fetchServersForEpisode, fetchStreamData, PROXY_URL, PROXY_URL2, fetchAnimeDetails, fetchScheduleData } from './api.js';
 import { getChapterStyles, updateChapterStyles } from './artPlayer/chapter.js';
 
 let player = null;
@@ -289,7 +289,81 @@ async function loadPlayerForEpisode(fullEpisodeId, animeDetails, preferredServer
         };
         
         const headers = { Referer: new URL(sourceUrl).origin + "/" };
-        const finalProxyUrl = `${PROXY_URL}m3u8-proxy?url=${encodeURIComponent(sourceUrl)}&headers=${encodeURIComponent(JSON.stringify(headers))}`;
+        
+        // Function to try a proxy URL and fall back if it fails
+        async function tryProxyUrl(proxyUrl, proxyName) {
+            return new Promise((resolve, reject) => {
+                const testUrl = `${proxyUrl}m3u8-proxy?url=${encodeURIComponent(sourceUrl)}&headers=${encodeURIComponent(JSON.stringify(headers))}`;
+                
+                // Create a test player to see if the proxy works
+                const testPlayer = new Artplayer({
+                    url: testUrl,
+                    container: document.createElement('div'),
+                    type: 'm3u8',
+                    autoplay: false,
+                    muted: true,
+                    volume: 0,
+                    customType: {
+                        m3u8: (video, url, art) => {
+                            if (Hls.isSupported()) {
+                                if (art.hls) art.hls.destroy();
+                                const hls = new Hls({
+                                    maxLoadingDelay: 5,
+                                    lowLatencyMode: true,
+                                    enableWorker: true,
+                                });
+                                
+                                let errorTimeout = setTimeout(() => {
+                                    hls.destroy();
+                                    reject(new Error(`${proxyName} timeout`));
+                                }, 10000); // 10 second timeout
+                                
+                                hls.on(Hls.Events.ERROR, function (event, data) {
+                                    clearTimeout(errorTimeout);
+                                    if (data.fatal) {
+                                        hls.destroy();
+                                        reject(new Error(`${proxyName} error: ${data.type}`));
+                                    }
+                                });
+                                
+                                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                                    clearTimeout(errorTimeout);
+                                    hls.destroy();
+                                    resolve(testUrl);
+                                });
+                                
+                                hls.loadSource(url);
+                                hls.attachMedia(video);
+                                art.hls = hls;
+                            } else {
+                                reject(new Error('HLS not supported'));
+                            }
+                        }
+                    }
+                });
+                
+                // Clean up test player after a short time
+                setTimeout(() => {
+                    testPlayer.destroy();
+                }, 100);
+            });
+        }
+        
+        // Try PROXY_URL first, then fall back to PROXY_URL2
+        let finalProxyUrl;
+        try {
+            finalProxyUrl = await tryProxyUrl(PROXY_URL, 'Primary Proxy');
+            console.log('Using primary proxy:', PROXY_URL);
+        } catch (primaryError) {
+            console.warn('Primary proxy failed, trying fallback:', primaryError.message);
+            try {
+                finalProxyUrl = await tryProxyUrl(PROXY_URL2, 'Fallback Proxy');
+                console.log('Using fallback proxy:', PROXY_URL2);
+            } catch (fallbackError) {
+                throw new Error(`Both proxies failed: ${primaryError.message}, ${fallbackError.message}`);
+            }
+        }
+        
         playerContainer.innerHTML = "";
         
         const newPlayer = new Artplayer({
